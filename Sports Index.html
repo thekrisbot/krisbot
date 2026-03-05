@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Sports SEW — Krisbot</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root{--cream:#f0ead6;--black:#0e0e0e;--white:#f5f0e8;--yellow:#f7d94c;--red:#e03e2d;--blue:#2563eb;--green:#16a34a;--muted:#6b6b6b;--border:#d4ccb4}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--cream);color:var(--black);font-family:'Instrument Sans',sans-serif;min-height:100vh}
+a{text-decoration:none;color:inherit}
+.s-nav{background:var(--black);padding:10px 32px;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid var(--yellow);position:sticky;top:0;z-index:100}
+.s-logo{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:3px;color:var(--yellow)}
+.s-logo-white{color:var(--white)}
+.s-nav-tabs{display:flex;gap:4px}
+.s-nav-tab{padding:8px 18px;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:1px;text-transform:uppercase;border:1.5px solid transparent;border-radius:2px;color:var(--white);background:transparent;text-decoration:none;transition:all .15s}
+.s-nav-tab:hover{border-color:var(--yellow);color:var(--yellow)}
+.a-home,.a-contact{background:var(--yellow)!important;color:var(--black)!important;border-color:var(--yellow)!important}
+.a-comedy{background:var(--red)!important;color:white!important;border-color:var(--red)!important}
+.a-sports{background:var(--blue)!important;color:white!important;border-color:var(--blue)!important}
+.a-butwhy{background:var(--green)!important;color:white!important;border-color:var(--green)!important}
+.a-profiles{background:#7c3aed!important;color:white!important;border-color:#7c3aed!important}
+.s-home-grid{display:grid;grid-template-columns:1fr 1fr;min-height:calc(100vh - 55px)}
+.s-home-left{padding:70px 60px;display:flex;flex-direction:column;justify-content:center;border-right:2px solid var(--border)}
+.s-home-right{display:grid;grid-template-rows:1fr 1fr 1fr 1fr 1fr}
+.s-card{padding:30px 36px;border-bottom:2px solid var(--border)}
+.s-card:last-child{border-bottom:none}
+.s-sec-header{padding:44px 60px 28px;border-bottom:2px solid var(--border)}
+.s-subtabs{display:flex;padding:0 60px;border-bottom:2px solid var(--border);background:var(--white)}
+.s-subtab{padding:14px 24px;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:1px;text-transform:uppercase}
+.s-content{padding:44px 60px}
+.s-contact-wrap{max-width:640px;margin:0 auto;padding:70px 40px}
+.s-contact-card{display:flex;align-items:center;gap:16px;padding:16px 20px;border:2px solid var(--border);border-radius:3px;background:var(--white);margin-bottom:10px}
+input[type=email]{flex:1;background:var(--white);border:2px solid var(--border);color:var(--black);font-family:'Instrument Sans',sans-serif;font-size:14px;padding:11px 15px;border-radius:3px;outline:none}
+input[type=email]:focus{border-color:var(--yellow);outline:none}
+.sib-form button[type=submit]{padding:11px 22px;background:var(--black);color:var(--yellow);font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:2px;border:none;border-radius:3px;cursor:pointer;transition:background .15s}
+.sib-form button[type=submit]:hover{background:var(--yellow);color:var(--black)}
+</style>
+</head>
+<body>
+<div class="s-nav">
+  <div class="s-logo"><span>KRIS</span><span class="s-logo-white">BOT</span></div>
+  <div class="s-nav-tabs">
+    <div class="s-nav-tab">Home</div>
+    <div class="s-nav-tab">Comedy</div>
+    <div class="s-nav-tab s-active-sports">Sports (SEW)</div>
+    <div class="s-nav-tab">But Why Though</div>
+    <div class="s-nav-tab">Profiles</div>
+    <div class="s-nav-tab">Contact</div>
+  </div>
+</div>
+<div class="s-sec-header">
+  <div class="" style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--blue);margin-bottom:10px">B · Section</div>
+  <div class="" style="font-family:'Bebas Neue',sans-serif;font-size:60px;letter-spacing:2px;line-height:1;color:var(--blue);margin-bottom:10px">Sports Entertainment Weekly</div>
+  <div class="" style="font-family:'DM Serif Display',serif;font-style:italic;font-size:18px;color:var(--muted)">Weekly episodes + satirical sports writing</div>
+</div>
+<div class="s-subtabs">
+  <div class="s-subtab" style="font-family:'DM Mono',monospace;color:var(--blue);border-bottom:3px solid var(--blue);margin-bottom:-2px">B1 · SEW Episodes</div>
+  <div class="s-subtab" style="font-family:'DM Mono',monospace;color:var(--muted)">B2 · Satire</div>
+</div>
+<div class="s-content">
+  <div class="" style="font-family:'DM Serif Display',serif;font-style:italic;font-size:22px;color:var(--border)">First episode coming soon.</div>
+</div>
+<div style="background:var(--black);padding:48px 60px;border-top:3px solid var(--yellow)">
+  <div style="max-width:560px">
+    <div class="" style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--yellow);margin-bottom:10px">✦ Newsletter</div>
+    <div class="" style="font-family:'Bebas Neue',sans-serif;font-size:40px;line-height:1;color:var(--white);margin-bottom:8px">GET NEW POSTS</div>
+    <div class="" style="font-family:'DM Serif Display',serif;font-style:italic;font-size:16px;color:#888;margin-bottom:4px">Drop your email. I'll hit you when I publish something. No spam, ever.</div>
+    <div style="display:flex;gap:10px;margin-top:16px">
+        <input type="email" placeholder="your@email.com" style="flex:1;background:var(--white);border:2px solid var(--border);color:var(--black);font-family:'Instrument Sans',sans-serif;font-size:14px;padding:11px 15px;border-radius:3px;outline:none">
+        <button class="" style="padding:11px 22px;background:var(--black);color:var(--yellow);font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:2px;border:none;border-radius:3px;cursor:pointer">SUBSCRIBE</button>
+      </div>
+      
+  </div>
+</div>
+</body>
+</html>
