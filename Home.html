@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Krisbot Site Editor</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&family=Anton&family=Lora:ital,wght@0,400;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ══ EDITOR CHROME ══════════════════════════════════════════════════════ */
+:root {
+  --ep: #0d0d0d; --epanel: #161616; --eb: #222;
+  --emuted: #555; --etext: #bbb; --ey: #f7d94c;
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; overflow: hidden; font-family: 'Instrument Sans', sans-serif; }
+
+.e-shell { display: flex; flex-direction: column; height: 100vh; background: var(--ep); }
+
+/* TOP BAR */
+.e-top { height: 50px; background: #0a0a0a; border-bottom: 2px solid var(--ey); display: flex; align-items: center; justify-content: space-between; padding: 0 18px; flex-shrink: 0; gap: 12px; }
+.e-logo { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 3px; color: var(--ey); white-space: nowrap; }
+.e-logo small { font-family: 'DM Mono', monospace; font-size: 9px; color: #444; letter-spacing: 2px; margin-left: 8px; }
+.e-tabs { display: flex; gap: 3px; }
+.e-tab { padding: 5px 12px; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; border: 1px solid var(--eb); color: var(--emuted); background: none; cursor: pointer; border-radius: 2px; transition: all .12s; white-space: nowrap; }
+.e-tab:hover { color: var(--etext); border-color: #444; }
+.e-tab.on { background: var(--ey); color: #000; border-color: var(--ey); font-weight: 700; }
+.e-actions { display: flex; gap: 6px; flex-shrink: 0; }
+.e-btn { padding: 6px 13px; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; border-radius: 2px; cursor: pointer; border: 1px solid; transition: all .12s; white-space: nowrap; }
+.e-btn-y { background: var(--ey); color: #000; border-color: var(--ey); font-weight: 700; }
+.e-btn-y:hover { background: #fff; border-color: #fff; }
+.e-btn-g { background: none; color: var(--emuted); border-color: var(--eb); }
+.e-btn-g:hover { color: #e03e2d; border-color: #e03e2d; }
+
+/* BODY SPLIT */
+.e-body { display: flex; flex: 1; overflow: hidden; }
+
+/* LEFT PANEL */
+.e-panel { width: 260px; background: var(--epanel); border-right: 1px solid var(--eb); overflow-y: auto; flex-shrink: 0; }
+.e-sec { border-bottom: 1px solid var(--eb); }
+.e-sec-h { padding: 10px 14px; font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--emuted); display: flex; justify-content: space-between; cursor: pointer; user-select: none; }
+.e-sec-h:hover { color: var(--etext); }
+.e-sec-b { padding: 10px 14px; display: flex; flex-direction: column; gap: 9px; }
+.e-sec-b.shut { display: none; }
+
+/* COLOR CONTROLS */
+.c-row { display: flex; align-items: center; gap: 7px; }
+.c-swatch { width: 22px; height: 22px; border-radius: 2px; border: 1px solid #333; position: relative; overflow: hidden; flex-shrink: 0; cursor: pointer; }
+.c-swatch input[type=color] { position: absolute; inset: -4px; width: calc(100%+8px); height: calc(100%+8px); opacity: 0; cursor: pointer; width: 200%; height: 200%; }
+.c-name { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--emuted); flex: 1; }
+.c-hex { width: 66px; font-family: 'DM Mono', monospace; font-size: 10px; background: #0d0d0d; border: 1px solid var(--eb); color: var(--etext); padding: 4px 6px; border-radius: 2px; outline: none; }
+.c-hex:focus { border-color: var(--ey); }
+
+/* FONT CONTROLS */
+.f-row { display: flex; flex-direction: column; gap: 4px; }
+.f-lbl { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--emuted); }
+.f-sel { width: 100%; background: #0d0d0d; border: 1px solid var(--eb); color: var(--etext); font-size: 12px; padding: 6px 8px; border-radius: 2px; outline: none; cursor: pointer; font-family: 'Instrument Sans', sans-serif; }
+.f-sel:focus { border-color: var(--ey); }
+.f-sel option { background: #0d0d0d; }
+
+/* INSPECTOR */
+.i-empty { padding: 14px; font-family: 'DM Mono', monospace; font-size: 10px; color: var(--emuted); line-height: 1.8; }
+.i-wrap { padding: 12px 14px; }
+.i-field { margin-bottom: 9px; }
+.i-field label { display: block; font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--emuted); margin-bottom: 4px; }
+.i-field input, .i-field textarea { width: 100%; background: #0d0d0d; border: 1px solid var(--eb); color: var(--etext); font-family: 'Instrument Sans', sans-serif; font-size: 12px; padding: 6px 8px; border-radius: 2px; outline: none; resize: vertical; line-height: 1.5; }
+.i-field input:focus, .i-field textarea:focus { border-color: var(--ey); }
+.i-btns { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 8px; }
+.i-btn { padding: 5px 9px; font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 1px; text-transform: uppercase; border: 1px solid var(--eb); background: none; color: var(--emuted); cursor: pointer; border-radius: 2px; transition: all .1s; }
+.i-btn:hover { color: var(--ey); border-color: var(--ey); }
+.i-btn.danger:hover { color: #e03e2d; border-color: #e03e2d; }
+
+/* CANVAS */
+.e-canvas { flex: 1; overflow-y: auto; background: #111; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+.e-hint { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: #282828; margin-bottom: 14px; align-self: flex-start; }
+.e-frame { width: 100%; max-width: 1200px; background: white; border-radius: 3px; box-shadow: 0 0 0 1px #1e1e1e, 0 20px 60px rgba(0,0,0,.7); overflow: hidden; }
+
+/* ══ SITE STYLES (scoped inside .e-frame) ══════════════════════════════ */
+.e-frame { --black: #0e0e0e; --white: #f5f0e8; --cream: #f0ead6; --yellow: #f7d94c; --red: #e03e2d; --blue: #2563eb; --green: #16a34a; --muted: #6b6b6b; --border: #d4ccb4; }
+
+.site-wrap { background: var(--cream); color: var(--black); font-family: 'Instrument Sans', sans-serif; min-height: 600px; }
+
+/* NAV */
+.s-nav { background: var(--black); padding: 10px 32px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--yellow); }
+.s-logo { font-family: var(--font-display, 'Bebas Neue'), sans-serif; font-size: 28px; letter-spacing: 3px; color: var(--yellow); }
+.s-logo-white { color: var(--white); }
+.s-nav-tabs { display: flex; gap: 4px; }
+.s-nav-tab { padding: 8px 18px; font-family: var(--font-mono, 'DM Mono'), monospace; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; border: 1.5px solid transparent; border-radius: 2px; color: var(--white); background: transparent; transition: all .15s; cursor: default; }
+.s-nav-tab.s-active-home, .s-nav-tab.s-active-contact { background: var(--yellow); color: var(--black); border-color: var(--yellow); }
+.s-nav-tab.s-active-comedy { background: var(--red); color: white; border-color: var(--red); }
+.s-nav-tab.s-active-sports { background: var(--blue); color: white; border-color: var(--blue); }
+.s-nav-tab.s-active-butwhy { background: var(--green); color: white; border-color: var(--green); }
+.s-nav-tab.s-active-profiles { background: #7c3aed; color: white; border-color: #7c3aed; }
+
+/* HOME */
+.s-home-grid { display: grid; grid-template-columns: 1fr 1fr; min-height: 580px; }
+.s-home-left { padding: 70px 60px; display: flex; flex-direction: column; justify-content: center; border-right: 2px solid var(--border); }
+.s-home-right { display: grid; grid-template-rows: 1fr 1fr 1fr 1fr; }
+.s-card { padding: 30px 36px; border-bottom: 2px solid var(--border); }
+.s-card:last-child { border-bottom: none; }
+
+/* SECTION PAGES */
+.s-sec-header { padding: 44px 60px 28px; border-bottom: 2px solid var(--border); }
+.s-subtabs { display: flex; padding: 0 60px; border-bottom: 2px solid var(--border); background: var(--white); }
+.s-subtab { padding: 14px 24px; font-family: var(--font-mono, 'DM Mono'), monospace; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; }
+.s-content { padding: 44px 60px; }
+
+/* CONTACT */
+.s-contact-wrap { max-width: 640px; margin: 0 auto; padding: 70px 40px; }
+.s-contact-card { display: flex; align-items: center; gap: 16px; padding: 16px 20px; border: 2px solid var(--border); border-radius: 3px; background: var(--white); margin-bottom: 10px; }
+
+/* EDITABLE ELEMENT HIGHLIGHT */
+[data-e] { cursor: pointer; transition: outline 0.1s; }
+[data-e]:hover { outline: 2px dashed rgba(247, 217, 76, 0.5); outline-offset: 3px; }
+[data-e].e-sel { outline: 2px solid #f7d94c !important; outline-offset: 3px; background: rgba(247,217,76,0.05); }
+</style>
+</head>
+<body>
+
+<div class="e-shell">
+  <!-- TOP BAR -->
+  <div class="e-top">
+    <div class="e-logo">KRISBOT <small>/ EDITOR</small></div>
+    <div class="e-tabs">
+      <button class="e-tab on"  onclick="goPage('home',this)">Home</button>
+      <button class="e-tab" onclick="goPage('comedy',this)">Comedy</button>
+      <button class="e-tab" onclick="goPage('sports',this)">Sports</button>
+      <button class="e-tab" onclick="goPage('butwhy',this)">But Why</button>
+      <button class="e-tab" onclick="goPage('profiles',this)">Profiles</button>
+      <button class="e-tab" onclick="goPage('contact',this)">Contact</button>
+    </div>
+    <div class="e-actions">
+      <button class="e-btn e-btn-g" onclick="doReset()">↺ Reset</button>
+      <button class="e-btn e-btn-y" onclick="doExport()">↓ Export All Pages</button>
+    </div>
+  </div>
+
+  <div class="e-body">
+    <!-- LEFT PANEL -->
+    <div class="e-panel">
+
+      <div class="e-sec">
+        <div class="e-sec-h" onclick="toggleSec(this)">🎨 Colors <span>▾</span></div>
+        <div class="e-sec-b" id="sec-colors">
+          <div class="c-row"><div class="c-swatch" id="sw-cream" style="background:#f0ead6"><input type="color" value="#f0ead6" oninput="pickColor('cream',this.value)"></div><div class="c-name">Background</div><input class="c-hex" id="hx-cream" value="#f0ead6" maxlength="7" oninput="hexColor('cream',this.value)"></div>
+          <div class="c-row"><div class="c-swatch" id="sw-black" style="background:#0e0e0e"><input type="color" value="#0e0e0e" oninput="pickColor('black',this.value)"></div><div class="c-name">Navbar</div><input class="c-hex" id="hx-black" value="#0e0e0e" maxlength="7" oninput="hexColor('black',this.value)"></div>
+          <div class="c-row"><div class="c-swatch" id="sw-yellow" style="background:#f7d94c"><input type="color" value="#f7d94c" oninput="pickColor('yellow',this.value)"></div><div class="c-name">Accent</div><input class="c-hex" id="hx-yellow" value="#f7d94c" maxlength="7" oninput="hexColor('yellow',this.value)"></div>
+          <div class="c-row"><div class="c-swatch" id="sw-red" style="background:#e03e2d"><input type="color" value="#e03e2d" oninput="pickColor('red',this.value)"></div><div class="c-name">Comedy</div><input class="c-hex" id="hx-red" value="#e03e2d" maxlength="7" oninput="hexColor('red',this.value)"></div>
+          <div class="c-row"><div class="c-swatch" id="sw-blue" style="background:#2563eb"><input type="color" value="#2563eb" oninput="pickColor('blue',this.value)"></div><div class="c-name">Sports</div><input class="c-hex" id="hx-blue" value="#2563eb" maxlength="7" oninput="hexColor('blue',this.value)"></div>
+          <div class="c-row"><div class="c-swatch" id="sw-green" style="background:#16a34a"><input type="color" value="#16a34a" oninput="pickColor('green',this.value)"></div><div class="c-name">But Why</div><input class="c-hex" id="hx-green" value="#16a34a" maxlength="7" oninput="hexColor('green',this.value)"></div>
+        </div>
+      </div>
+
+      <div class="e-sec">
+        <div class="e-sec-h" onclick="toggleSec(this)">✦ Fonts <span>▾</span></div>
+        <div class="e-sec-b">
+          <div class="f-row"><div class="f-lbl">Headings / Logo</div>
+            <select class="f-sel" onchange="setFont('display',this.value)">
+              <option value="Bebas Neue">Bebas Neue</option>
+              <option value="Anton">Anton</option>
+              <option value="Oswald">Oswald</option>
+              <option value="Barlow Condensed">Barlow Condensed</option>
+            </select>
+          </div>
+          <div class="f-row"><div class="f-lbl">Body / Reading</div>
+            <select class="f-sel" onchange="setFont('body',this.value)">
+              <option value="DM Serif Display">DM Serif Display</option>
+              <option value="Lora">Lora</option>
+              <option value="Playfair Display">Playfair Display</option>
+              <option value="Merriweather">Merriweather</option>
+            </select>
+          </div>
+          <div class="f-row"><div class="f-lbl">Labels / Nav</div>
+            <select class="f-sel" onchange="setFont('mono',this.value)">
+              <option value="DM Mono">DM Mono</option>
+              <option value="Space Mono">Space Mono</option>
+              <option value="Roboto Mono">Roboto Mono</option>
+              <option value="Fira Mono">Fira Mono</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="e-sec">
+        <div class="e-sec-h" onclick="toggleSec(this)">📬 Newsletter <span>▾</span></div>
+        <div class="e-sec-b" id="sec-newsletter">
+          <div class="f-row">
+            <div class="f-lbl" style="color:#bbb;font-size:10px;line-height:1.6">Paste your <b style="color:#f7d94c">Brevo Form ID</b> here. Get it from Brevo → Email Campaigns → Subscription Forms → Embed.</div>
+          </div>
+          <div class="f-row" style="margin-top:4px">
+            <div class="f-lbl">Brevo Form ID</div>
+            <input class="c-hex" id="brevo-form-id" placeholder="e.g. 12" maxlength="20" style="width:100%;font-size:11px" oninput="setBrevoId(this.value)">
+          </div>
+          <div class="f-row" style="margin-top:2px">
+            <div class="f-lbl" style="color:#555;font-size:9px">Leave blank to use default Brevo HTML form embed. Form appears on every page footer + Contact page.</div>
+          </div>
+          <button class="e-btn e-btn-g" onclick="window.open('https://app.brevo.com/contact/list','_blank')" style="margin-top:4px;width:100%;font-size:9px">↗ Open Brevo Dashboard</button>
+        </div>
+      </div>
+
+      <div class="e-sec">
+        <div class="e-sec-h" onclick="toggleSec(this)">✎ Edit Selected <span>▾</span></div>
+        <div id="inspector">
+          <div class="i-empty">👆 Click any text on the preview to select and edit it.<br><br>Elements glow yellow when you hover.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- CANVAS -->
+    <div class="e-canvas">
+      <div class="e-hint">LIVE PREVIEW — click any element to edit</div>
+      <div class="e-frame">
+        <div class="site-wrap" id="site-wrap">
+          <!-- rendered here -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══ STATE ══════════════════════════════════════════════════════════════
+const SC = { cream:'#f0ead6', black:'#0e0e0e', white:'#f5f0e8', yellow:'#f7d94c', red:'#e03e2d', blue:'#2563eb', green:'#16a34a', muted:'#6b6b6b', border:'#d4ccb4' };
+const SF = { display:'Bebas Neue', body:'DM Serif Display', mono:'DM Mono' };
+// Per-page text overrides: { pageKey: { elemId: newText } }
+const TEXT = { home:{}, comedy:{}, sports:{}, butwhy:{}, profiles:{}, contact:{} };
+let CUR_PAGE = 'home';
+let SEL_ID = null; // currently selected element id
+let BREVO_FORM_ID = ''; // Brevo signup form ID
+
+function setBrevoId(val) {
+  BREVO_FORM_ID = val.trim();
+  render();
+}
+
+// ══ SITE CSS VARS ══════════════════════════════════════════════════════
+function applyCSSVars() {
+  const wrap = document.getElementById('site-wrap');
+  if (!wrap) return;
+  Object.entries(SC).forEach(([k,v]) => wrap.style.setProperty('--'+k, v));
+  wrap.style.setProperty('--font-display', `'${SF.display}'`);
+  wrap.style.setProperty('--font-mono', `'${SF.mono}'`);
+  wrap.style.setProperty('--font-body', `'${SF.body}'`);
+  // Apply font family to elements that use it
+  wrap.querySelectorAll('.uses-display').forEach(el => el.style.fontFamily = `'${SF.display}', sans-serif`);
+  wrap.querySelectorAll('.uses-mono').forEach(el => el.style.fontFamily = `'${SF.mono}', monospace`);
+  wrap.querySelectorAll('.uses-body').forEach(el => el.style.fontFamily = `'${SF.body}', serif`);
+}
+
+// ══ NAV HTML ═══════════════════════════════════════════════════════════
+function navHTML(active) {
+  const tabs = [
+    { k:'home',     l:'Home',           },
+    { k:'comedy',   l:'Comedy',         },
+    { k:'sports',   l:'Sports (SEW)',   },
+    { k:'butwhy',   l:'But Why Though', },
+    { k:'profiles', l:'Profiles',       },
+    { k:'contact',  l:'Contact',        },
+  ];
+  return `<div class="s-nav">
+  <div class="s-logo uses-display" data-e="nav-logo"><span data-e="logo-kris">KRIS</span><span class="s-logo-white" data-e="logo-bot">BOT</span></div>
+  <div class="s-nav-tabs">
+    ${tabs.map(t=>`<div class="s-nav-tab${t.k===active?' s-active-'+active:''} uses-mono" data-e="nav-${t.k}">${t.l}</div>`).join('\n    ')}
+  </div>
+</div>`;
+}
+
+// ══ NEWSLETTER FOOTER HTML ════════════════════════════════════════════
+function newsletterHTML() {
+  const formEmbed = BREVO_FORM_ID
+    ? `<div id="sib-form-container" style="margin-top:16px">
+        <div id="sib-container" style="display:inline-block;width:100%">
+          <div id="sib-form-container-message-error" style="display:none;color:#e03e2d;font-family:'DM Mono',monospace;font-size:11px;margin-bottom:8px"></div>
+          <div id="sib-form-container-message-success" style="display:none;color:#16a34a;font-family:'DM Mono',monospace;font-size:11px;margin-bottom:8px"></div>
+          <!-- Brevo Form ${BREVO_FORM_ID} embedded below -->
+          <script>
+            window.REQUIRED_CODE_ERROR_MESSAGE = 'Please choose a country code';
+            window.LOCALE = 'en';
+            window.EMAIL_INVALID_MESSAGE = window.SMS_INVALID_MESSAGE = "The information provided is invalid. Please review the field format and try again.";
+            window.REQUIRED_ERROR_MESSAGE = "This field cannot be left blank. ";
+            window.GENERIC_INVALID_MESSAGE = "The information provided is invalid. Please review the field format and try again.";
+            window.translation = { common: { selectedList: '{quantity} list selected', selectedLists: '{quantity} lists selected' } };
+            var AUTOHIDE = Boolean(0);
+          <\/script>
+          <form action="https://sibforms.com/serve/MUIFAXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxx" method="POST" class="sib-form" style="display:flex;gap:10px">
+            <input type="email" name="EMAIL" placeholder="your@email.com" autocomplete="off" required
+              style="flex:1;background:var(--white);border:2px solid var(--border);color:var(--black);font-family:'Instrument Sans',sans-serif;font-size:14px;padding:11px 15px;border-radius:3px;outline:none">
+            <button type="submit"
+              style="padding:11px 22px;background:var(--black);color:var(--yellow);font-family:'${SF.display}',sans-serif;font-size:17px;letter-spacing:2px;border:none;border-radius:3px;cursor:pointer">
+              SUBSCRIBE
+            </button>
+          </form>
+          <p style="margin-top:10px;font-family:'DM Mono',monospace;font-size:10px;color:var(--muted)">
+            ✦ Replace the form action URL with your actual Brevo form URL once set up. See setup guide.
+          </p>
+        </div>
+      </div>`
+    : `<div style="display:flex;gap:10px;margin-top:16px">
+        <input type="email" placeholder="your@email.com" style="flex:1;background:var(--white);border:2px solid var(--border);color:var(--black);font-family:'Instrument Sans',sans-serif;font-size:14px;padding:11px 15px;border-radius:3px;outline:none">
+        <button data-e="nl-btn" class="uses-display" style="padding:11px 22px;background:var(--black);color:var(--yellow);font-family:'${SF.display}',sans-serif;font-size:17px;letter-spacing:2px;border:none;border-radius:3px;cursor:pointer">SUBSCRIBE</button>
+      </div>
+      <p style="margin-top:10px;font-family:'DM Mono',monospace;font-size:10px;color:var(--muted)">↑ Enter your Brevo Form ID in the Newsletter panel to wire this up →</p>`;
+
+  return `<div style="background:var(--black);padding:48px 60px;border-top:3px solid var(--yellow)">
+  <div style="max-width:560px">
+    <div data-e="nl-eyebrow" class="uses-mono" style="font-family:'${SF.mono}',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--yellow);margin-bottom:10px">✦ Newsletter</div>
+    <div data-e="nl-title" class="uses-display" style="font-family:'${SF.display}',sans-serif;font-size:40px;line-height:1;color:var(--white);margin-bottom:8px">GET NEW POSTS</div>
+    <div data-e="nl-desc" class="uses-body" style="font-family:'${SF.body}',serif;font-style:italic;font-size:16px;color:#888;margin-bottom:4px">Drop your email. I'll hit you when I publish something. No spam, ever.</div>
+    ${formEmbed}
+  </div>
+</div>`;
+}
+
+const TMPL = {
+
+home: ()=>`${navHTML('home')}
+<div class="s-home-grid">
+  <div class="s-home-left">
+    <div data-e="hero-eyebrow" class="uses-mono" style="font-family:'${SF.mono}',monospace;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:18px">✦ krisbot.lol</div>
+    <div data-e="hero-name" class="uses-display" style="font-family:'${SF.display}',sans-serif;font-size:90px;line-height:.9;letter-spacing:2px;margin-bottom:22px">KRIS<span style="color:var(--red)">BOT</span></div>
+    <div data-e="hero-bio" class="uses-body" style="font-family:'${SF.body}',serif;font-size:20px;line-height:1.6;color:#333;max-width:400px">Writer. Comedian. Sports nerd. Chronic over-thinker who turns confusion into content.</div>
+  </div>
+  <div class="s-home-right" style="grid-template-rows:1fr 1fr 1fr 1fr 1fr">
+    <div class="s-card">
+      <div data-e="card-a-tag" class="uses-mono" style="font-family:'${SF.mono}',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:4px 10px;border-radius:2px;background:var(--red);color:white;display:inline-block;margin-bottom:10px">A · Comedy</div>
+      <div data-e="card-a-title" class="uses-body" style="font-family:'${SF.body}',serif;font-size:19px;margin-bottom:6px;line-height:1.3">SNL Packets, Sketches & Chaos</div>
+      <div data-e="card-a-desc" style="font-size:13px;color:var(--muted)">Daily sketch writing and whatever else falls out of my brain.</div>
+    </div>
+    <div class="s-card">
+      <div data-e="card-b-tag" class="uses-mono" style="font-family:'${SF.mono}',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:4px 10px;border-radius:2px;background:var(--blue);color:white;display:inline-block;margin-bottom:10px">B · Sports Entertainment Weekly</div>
+      <div data-e="card-b-title" class="uses-body" style="font-family:'${SF.body}',serif;font-size:19px;margin-bottom:6px;line-height:1.3">The Onion, but for Sports</div>
+      <div data-e="card-b-desc" style="font-size:13px;color:var(--muted)">Weekly episodes and satirical sports writing.</div>
+    </div>
+    <div class="s-card">
+      <div data-e="card-c-tag" class="uses-mono" style="font-family:'${SF.mono}',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:4px 10px;border-radius:2px;background:var(--green);color:white;display:inline-block;margin-bottom:10px">C · But Why Though</div>
+      <div data-e="card-c-title" class="uses-body" style="font-family:'${SF.body}',serif;font-size:19px;margin-bottom:6px;line-height:1.3">Personal Essays That Get Weird</div>
+      <div data-e="card-c-desc" style="font-size:13px;color:var(--muted)">Thought-provoking, occasionally unhinged essays.</div>
+    </div>
+    <div class="s-card">
+      <div data-e="card-d-tag" class="uses-mono" style="font-family:'${SF.mono}',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:4px 10px;border-radius:2px;background:#7c3aed;color:white;display:inline-block;margin-bottom:10px">D · Profiles</div>
+      <div data-e="card-d-title" class="uses-body" style="font-family:'${SF.body}',serif;font-size:19px;margin-bottom:6px;line-height:1.3">People I Find Interesting</div>
+      <div data-e="card-d-desc" style="font-size:13px;color:var(--muted)">Written-up pieces on people worth knowing about.</div>
+    </div>
+    <div class="s-card">
+      <div data-e="card-e-tag" class="uses-mono" style="font-family:'${SF.mono}',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:4px 10px;border-radius:2px;background:var(--yellow);color:var(--black);display:inline-block;margin-bottom:10px">Contact</div>
+      <div data-e="card-e-title" class="uses-body" style="font-family:'${SF.body}',serif;font-size:19px;margin-bottom:6px;line-height:1.3">Get in Touch</div>
+      <div data-e="card-e-desc" style="font-size:13px;color:var(--muted)">Say hi, pitch something, or just lurk.</div>
+    </div>
+  </div>
+</div>
+${newsletterHTML()}`,
+
+comedy: ()=>`${navHTML('comedy')}
+<div class="s-sec-header">
+  <div data-e="sec-eyebrow" class="uses-mono" style="font-family:'${SF.mono}',monospace;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:10px">A · Section</div>
+  <div data-e="sec-title" class="uses-display" style="font-family:'${SF.display}',sans-serif;font-size:60px;letter-spacing:2px;line-height:1;color:var(--red);margin-bottom:10px">Comedy</div>
+  <div data-e="sec-desc" class="uses-body" style="font-family:'${SF.body}',serif;font-style:italic;font-size:18px;color:var(--muted)">Sketches, packets, and bits — updated regularly</div>
+</div>
+<div class="s-subtabs">
+  <div data-e="tab1" class="s-subtab uses-mono" style="font-family:'${SF.mono}',monospace;color:var(--red);border-bottom:3px solid var(--red);margin-bottom:-2px">A1 · SNL Writing Packet</div>
+  <div data-e="tab2" class="s-subtab uses-mono" style="font-family:'${SF.mono}',monospace;color:var(--muted)">A2 · Other Bits</div>
+</div>
+<div class="s-content">
+  <div data-e="empty-msg" class="uses-body" style="font-family:'${SF.body}',serif;font-style:italic;font-size:22px;color:var(--border)">First sketch coming soon.</div>
+</div>
+${newsletterHTML()}`,
+
+sports: ()=>`${navHTML('sports')}
+<div class="s-sec-header">
+  <div data-e="sec-eyebrow" class="uses-mono" style="font-family:'${SF.mono}',monospace;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--blue);margin-bottom:10px">B · Section</div>
+  <div data-e="sec-title" class="uses-display" style="font-family:'${SF.display}',sans-serif;font-size:60px;letter-spacing:2px;line-height:1;color:var(--blue);margin-bottom:10px">Sports Entertainment Weekly</div>
+  <div data-e="sec-desc" class="uses-body" style="font-family:'${SF.body}',serif;font-style:italic;font-size:18px;color:var(--muted)">Weekly episodes + satirical sports writing</div>
+</div>
+<div class="s-subtabs">
+  <div data-e="tab1" class="s-subtab uses-mono" style="font-family:'${SF.mono}',monospace;color:var(--blue);border-bottom:3px solid var(--blue);margin-bottom:-2px">B1 · SEW Episodes</div>
+  <div data-e="tab2" class="s-subtab uses-mono" style="font-family:'${SF.mono}',monospace;color:var(--muted)">B2 · Satire</div>
+</div>
+<div class="s-content">
+  <div data-e="empty-msg" class="uses-body" style="font-family:'${SF.body}',serif;font-style:italic;font-size:22px;color:var(--border)">First episode coming soon.</div>
+</div>
+${newsletterHTML()}`,
+
+butwhy: ()=>`${navHTML('butwhy')}
+<div class="s-sec-header">
+  <div data-e="sec-eyebrow" class="uses-mono" style="font-family:'${SF.mono}',monospace;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--green);margin-bottom:10px">C · Section</div>
+  <div data-e="sec-title" class="uses-display" style="font-family:'${SF.display}',sans-serif;font-size:60px;letter-spacing:2px;line-height:1;color:var(--green);margin-bottom:10px">But Why Though</div>
+  <div data-e="sec-desc" class="uses-body" style="font-family:'${SF.body}',serif;font-style:italic;font-size:18px;color:var(--muted)">Essays on things that don't need essays but got them anyway</div>
+</div>
+<div class="s-content">
+  <div data-e="empty-msg" class="uses-body" style="font-family:'${SF.body}',serif;font-style:italic;font-size:22px;color:var(--border)">First essay coming soon.</div>
+</div>
+${newsletterHTML()}`,
+
+profiles: ()=>`${navHTML('profiles')}
+<div class="s-sec-header">
+  <div data-e="sec-eyebrow" class="uses-mono" style="font-family:'${SF.mono}',monospace;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#7c3aed;margin-bottom:10px">D · Section</div>
+  <div data-e="sec-title" class="uses-display" style="font-family:'${SF.display}',sans-serif;font-size:60px;letter-spacing:2px;line-height:1;color:#7c3aed;margin-bottom:10px">Profiles</div>
+  <div data-e="sec-desc" class="uses-body" style="font-family:'${SF.body}',serif;font-style:italic;font-size:18px;color:var(--muted)">People I find interesting — written up</div>
+</div>
+<div class="s-subtabs">
+  <div data-e="tab1" class="s-subtab uses-mono" style="font-family:'${SF.mono}',monospace;color:#7c3aed;border-bottom:3px solid #7c3aed;margin-bottom:-2px">D1 · Latest</div>
+  <div data-e="tab2" class="s-subtab uses-mono" style="font-family:'${SF.mono}',monospace;color:var(--muted)">D2 · Archive</div>
+</div>
+<div class="s-content">
+  <div data-e="empty-msg" class="uses-body" style="font-family:'${SF.body}',serif;font-style:italic;font-size:22px;color:var(--border)">First profile coming soon.</div>
+</div>
+${newsletterHTML()}`,
+
+contact: ()=>`${navHTML('contact')}
+<div class="s-contact-wrap">
+  <div data-e="page-eyebrow" class="uses-mono" style="font-family:'${SF.mono}',monospace;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:14px">Get in touch</div>
+  <div data-e="page-title" class="uses-display" style="font-family:'${SF.display}',sans-serif;font-size:68px;line-height:1;margin-bottom:20px">Contact</div>
+  <div data-e="page-bio" class="uses-body" style="font-family:'${SF.body}',serif;font-size:19px;line-height:1.7;color:#333;margin-bottom:44px">Say hi, pitch something, or just tell me I'm wrong.</div>
+
+  <!-- PERSONAL -->
+  <div style="margin-bottom:40px">
+    <div class="uses-mono" style="font-family:'${SF.mono}',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid var(--border)">Personal</div>
+    <div class="s-contact-card">
+      <span style="font-size:20px">✉️</span>
+      <div>
+        <div data-e="personal-email-label" class="uses-mono" style="font-family:'${SF.mono}',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:3px">Email</div>
+        <div data-e="personal-email-val" class="uses-body" style="font-family:'${SF.body}',serif;font-size:16px">hi@krisbot.lol</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEW -->
+  <div style="margin-bottom:40px">
+    <div class="uses-mono" style="font-family:'${SF.mono}',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--blue);margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid var(--border)">Sports Entertainment Weekly</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div class="s-contact-card">
+        <span style="font-size:20px">▶️</span>
+        <div>
+          <div class="uses-mono" style="font-family:'${SF.mono}',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:3px">YouTube</div>
+          <div data-e="sew-yt-val" class="uses-body" style="font-family:'${SF.body}',serif;font-size:16px">Sports Entertainment Weekly (@sewthisweek)</div>
+        </div>
+      </div>
+      <div class="s-contact-card">
+        <span style="font-size:20px">🐦</span>
+        <div>
+          <div class="uses-mono" style="font-family:'${SF.mono}',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:3px">X / Twitter</div>
+          <div data-e="sew-tw-val" class="uses-body" style="font-family:'${SF.body}',serif;font-size:16px">@sewthisweek</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OK BOOMER -->
+  <div style="margin-bottom:44px">
+    <div class="uses-mono" style="font-family:'${SF.mono}',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--green);margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid var(--border)">Ok Boomer!</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div class="s-contact-card">
+        <span style="font-size:20px">▶️</span>
+        <div>
+          <div class="uses-mono" style="font-family:'${SF.mono}',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:3px">YouTube</div>
+          <div data-e="ob-yt-val" class="uses-body" style="font-family:'${SF.body}',serif;font-size:16px">Ok Boomer! Playbook for Indian tech professionals (@reachokboomer)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+${newsletterHTML()}`
+
+}; // end TMPL
+
+// ══ RENDER ════════════════════════════════════════════════════════════
+function render() {
+  const wrap = document.getElementById('site-wrap');
+  const html = applyTextOverrides(TMPL[CUR_PAGE](), CUR_PAGE);
+  wrap.innerHTML = html;
+  applyCSSVars();
+  attachClicks();
+}
+
+function applyTextOverrides(html, page) {
+  // Use DOM parser to apply stored text changes
+  const doc = new DOMParser().parseFromString('<div id="root">'+html+'</div>', 'text/html');
+  const root = doc.getElementById('root');
+  const ovr = TEXT[page];
+  for (const [eid, changes] of Object.entries(ovr)) {
+    const el = root.querySelector(`[data-e="${eid}"]`);
+    if (!el) continue;
+    if (changes.deleted) { el.style.display='none'; continue; }
+    if (changes.text != null) el.textContent = changes.text;
+    if (changes.color) el.style.color = changes.color;
+    if (changes.fontSize) el.style.fontSize = changes.fontSize;
+    if (changes.fontWeight) el.style.fontWeight = changes.fontWeight;
+    if (changes.fontStyle) el.style.fontStyle = changes.fontStyle;
+  }
+  return root.innerHTML;
+}
+
+function attachClicks() {
+  const wrap = document.getElementById('site-wrap');
+  wrap.querySelectorAll('[data-e]').forEach(el => {
+    el.addEventListener('click', e => {
+      e.stopPropagation();
+      selectEl(el);
+    });
+  });
+  // Click blank area = deselect
+  wrap.addEventListener('click', () => deselect());
+}
+
+// ══ SELECTION ════════════════════════════════════════════════════════
+function selectEl(el) {
+  document.querySelectorAll('.e-sel').forEach(x => x.classList.remove('e-sel'));
+  el.classList.add('e-sel');
+  SEL_ID = el.dataset.e;
+  showInspector(el);
+}
+
+function deselect() {
+  document.querySelectorAll('.e-sel').forEach(x => x.classList.remove('e-sel'));
+  SEL_ID = null;
+  document.getElementById('inspector').innerHTML = `<div class="i-empty">👆 Click any text on the preview to select and edit it.<br><br>Elements glow yellow when you hover.</div>`;
+}
+
+function showInspector(el) {
+  const txt = el.innerText.trim();
+  const cs = window.getComputedStyle(el);
+  document.getElementById('inspector').innerHTML = `
+  <div class="i-wrap">
+    <div class="i-field">
+      <label>Text</label>
+      <textarea rows="3" id="i-text" oninput="liveEdit('text',this.value)">${txt}</textarea>
+    </div>
+    <div class="i-field">
+      <label>Font Size</label>
+      <input id="i-size" type="text" value="${el.style.fontSize||''}" placeholder="e.g. 20px" oninput="liveEdit('fontSize',this.value)">
+    </div>
+    <div class="i-field">
+      <label>Color</label>
+      <input id="i-color" type="text" value="${el.style.color||''}" placeholder="e.g. #333 or var(--red)" oninput="liveEdit('color',this.value)">
+    </div>
+    <div class="i-btns">
+      <button class="i-btn" onclick="toggleStyle('fontWeight','700','400')"><b>Bold</b></button>
+      <button class="i-btn" onclick="toggleStyle('fontStyle','italic','normal')"><i>Italic</i></button>
+      <button class="i-btn danger" onclick="deleteElem()">✕ Delete</button>
+    </div>
+  </div>`;
+}
+
+// ══ LIVE EDITING ══════════════════════════════════════════════════════
+function liveEdit(prop, val) {
+  if (!SEL_ID) return;
+  // Store override
+  if (!TEXT[CUR_PAGE][SEL_ID]) TEXT[CUR_PAGE][SEL_ID] = {};
+  TEXT[CUR_PAGE][SEL_ID][prop] = val;
+  // Apply directly to DOM element
+  const el = document.querySelector(`[data-e="${SEL_ID}"]`);
+  if (!el) return;
+  if (prop === 'text') el.textContent = val;
+  else el.style[prop] = val;
+}
+
+function toggleStyle(prop, onVal, offVal) {
+  if (!SEL_ID) return;
+  const el = document.querySelector(`[data-e="${SEL_ID}"]`);
+  if (!el) return;
+  const cur = window.getComputedStyle(el)[prop];
+  const next = (cur === onVal) ? offVal : onVal;
+  el.style[prop] = next;
+  if (!TEXT[CUR_PAGE][SEL_ID]) TEXT[CUR_PAGE][SEL_ID] = {};
+  TEXT[CUR_PAGE][SEL_ID][prop] = next;
+}
+
+function deleteElem() {
+  if (!SEL_ID || !confirm('Delete this element?')) return;
+  const el = document.querySelector(`[data-e="${SEL_ID}"]`);
+  if (el) el.style.display = 'none';
+  if (!TEXT[CUR_PAGE][SEL_ID]) TEXT[CUR_PAGE][SEL_ID] = {};
+  TEXT[CUR_PAGE][SEL_ID].deleted = true;
+  SEL_ID = null;
+  document.getElementById('inspector').innerHTML = `<div class="i-empty">Element hidden. Click another to edit.</div>`;
+}
+
+// ══ COLORS ════════════════════════════════════════════════════════════
+function pickColor(key, val) {
+  SC[key] = val;
+  document.getElementById('hx-'+key).value = val;
+  document.getElementById('sw-'+key).style.background = val;
+  applyCSSVars();
+}
+
+function hexColor(key, val) {
+  if (!/^#[0-9A-Fa-f]{6}$/.test(val)) return;
+  SC[key] = val;
+  document.getElementById('sw-'+key).style.background = val;
+  document.getElementById('sw-'+key).querySelector('input').value = val;
+  applyCSSVars();
+}
+
+// ══ FONTS ═════════════════════════════════════════════════════════════
+function setFont(type, val) {
+  SF[type] = val;
+  render(); // need full re-render for font changes
+}
+
+// ══ PAGE SWITCH ═══════════════════════════════════════════════════════
+function goPage(page, btn) {
+  CUR_PAGE = page; SEL_ID = null;
+  document.querySelectorAll('.e-tab').forEach(t => t.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('inspector').innerHTML = `<div class="i-empty">👆 Click any text on the preview to select and edit it.<br><br>Elements glow yellow when you hover.</div>`;
+  render();
+}
+
+// ══ PANEL TOGGLE ══════════════════════════════════════════════════════
+function toggleSec(head) {
+  const body = head.nextElementSibling;
+  const arr = head.querySelector('span');
+  body.classList.toggle('shut');
+  arr.textContent = body.classList.contains('shut') ? '▸' : '▾';
+}
+
+// ══ RESET ═════════════════════════════════════════════════════════════
+function doReset() {
+  if (!confirm('Reset all changes?')) return;
+  Object.assign(SC, {cream:'#f0ead6',black:'#0e0e0e',white:'#f5f0e8',yellow:'#f7d94c',red:'#e03e2d',blue:'#2563eb',green:'#16a34a',muted:'#6b6b6b',border:'#d4ccb4'});
+  Object.assign(SF, {display:'Bebas Neue',body:'DM Serif Display',mono:'DM Mono'});
+  ['cream','black','yellow','red','blue','green'].forEach(k=>{
+    document.getElementById('hx-'+k).value = SC[k];
+    document.getElementById('sw-'+k).style.background = SC[k];
+    document.getElementById('sw-'+k).querySelector('input').value = SC[k];
+  });
+  Object.keys(TEXT).forEach(p => { TEXT[p] = {}; });
+  render();
+}
+
+// ══ EXPORT ════════════════════════════════════════════════════════════
+const FILENAMES = { home:'ROOT-index.html', comedy:'COMEDY-index.html', sports:'SPORTS-index.html', butwhy:'BUTWHY-index.html', profiles:'PROFILES-index.html', contact:'CONTACT-index.html' };
+const GH_PATHS  = { home:'index.html', comedy:'comedy/index.html', sports:'sports/index.html', butwhy:'butwhy/index.html', profiles:'profiles/index.html', contact:'contact/index.html' };
+
+function buildExportHTML(page) {
+  const cssVarStr = Object.entries(SC).map(([k,v])=>`--${k}:${v}`).join(';');
+  const fUrl = (f) => ({
+    'Bebas Neue':'Bebas+Neue','Anton':'Anton','Oswald':'Oswald:wght@400;600',
+    'Barlow Condensed':'Barlow+Condensed:wght@400;600;700',
+    'DM Serif Display':'DM+Serif+Display:ital@0;1','Lora':'Lora:ital,wght@0,400;1,400',
+    'Playfair Display':'Playfair+Display:ital,wght@0,400;1,400','Merriweather':'Merriweather:ital,wght@0,400;1,400',
+    'DM Mono':'DM+Mono:wght@400;500','Space Mono':'Space+Mono:wght@400;700',
+    'Roboto Mono':'Roboto+Mono:wght@400;500','Fira Mono':'Fira+Mono:wght@400;500'
+  })[f]||f.replace(/ /g,'+');
+
+  const titles = {home:'Krisbot',comedy:'Comedy — Krisbot',sports:'Sports SEW — Krisbot',butwhy:'But Why Though — Krisbot',profiles:'Profiles — Krisbot',contact:'Contact — Krisbot'};
+  const navActiveClass = {home:'a-home',comedy:'a-comedy',sports:'a-sports',butwhy:'a-butwhy',profiles:'a-profiles',contact:'a-contact'};
+  const tabs = [{k:'home',l:'Home',h:'/'},{k:'comedy',l:'Comedy',h:'/comedy'},{k:'sports',l:'Sports (SEW)',h:'/sports'},{k:'butwhy',l:'But Why Though',h:'/butwhy'},{k:'profiles',l:'Profiles',h:'/profiles'},{k:'contact',l:'Contact',h:'/contact'}];
+
+  // Build clean body HTML from template + overrides
+  const raw = applyTextOverrides(TMPL[page](), page);
+  // Strip data-e and e-sel class
+  const doc = new DOMParser().parseFromString('<div>'+raw+'</div>','text/html');
+  doc.querySelectorAll('[data-e]').forEach(el => el.removeAttribute('data-e'));
+  doc.querySelectorAll('.e-sel').forEach(el => el.classList.remove('e-sel'));
+  doc.querySelectorAll('.uses-display,.uses-mono,.uses-body').forEach(el => {
+    el.classList.remove('uses-display','uses-mono','uses-body');
+  });
+  // Remove editor hint text from newsletter
+  doc.querySelectorAll('p').forEach(p => {
+    if (p.textContent.includes('Enter your Brevo Form ID')) p.remove();
+  });
+  // FIX NAV: replace div nav tabs with real <a> links
+  const navLinks = {home:'/',comedy:'/comedy',sports:'/sports',butwhy:'/butwhy',profiles:'/profiles',contact:'/contact'};
+  doc.querySelectorAll('.s-nav-tab').forEach(el => {
+    const a = doc.createElement('a');
+    a.className = el.className;
+    a.textContent = el.textContent;
+    // figure out which page this tab links to by matching active class or text
+    const matchedPage = Object.keys(navLinks).find(k => el.classList.contains('s-active-'+k)) ||
+      Object.keys(navLinks).find(k => el.textContent.toLowerCase().includes(k === 'butwhy' ? 'why' : k === 'sports' ? 'sew' : k));
+    a.href = matchedPage ? navLinks[matchedPage] : '/';
+    // also fix logo
+    el.parentNode.replaceChild(a, el);
+  });
+  // Fix logo to be a link
+  doc.querySelectorAll('.s-logo').forEach(el => {
+    if (el.tagName !== 'A') {
+      const a = doc.createElement('a');
+      a.className = el.className;
+      a.href = '/';
+      a.innerHTML = el.innerHTML;
+      el.parentNode.replaceChild(a, el);
+    }
+  });
+  const bodyContent = doc.querySelector('div').innerHTML;
+
+  const brevoScript = BREVO_FORM_ID ? `
+<link rel="stylesheet" href="https://sibforms.com/forms/end-form/build/sib-styles.css">
+<script>
+  window.REQUIRED_CODE_ERROR_MESSAGE = 'Please choose a country code';
+  window.LOCALE = 'en';
+  window.EMAIL_INVALID_MESSAGE = 'The information provided is invalid. Please review the field format and try again.';
+  window.REQUIRED_ERROR_MESSAGE = 'This field cannot be left blank.';
+<\/script>` : '';
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>${titles[page]}</title>
+<link href="https://fonts.googleapis.com/css2?family=${fUrl(SF.display)}&family=${fUrl(SF.body)}&family=${fUrl(SF.mono)}&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+${brevoScript}
+<style>
+:root{${cssVarStr}}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--cream);color:var(--black);font-family:'Instrument Sans',sans-serif;min-height:100vh}
+a{text-decoration:none;color:inherit}
+.s-nav{background:var(--black);padding:10px 32px;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid var(--yellow);position:sticky;top:0;z-index:100}
+.s-logo{font-family:'${SF.display}',sans-serif;font-size:28px;letter-spacing:3px;color:var(--yellow)}
+.s-logo-white{color:var(--white)}
+.s-nav-tabs{display:flex;gap:4px}
+.s-nav-tab{padding:8px 18px;font-family:'${SF.mono}',monospace;font-size:12px;letter-spacing:1px;text-transform:uppercase;border:1.5px solid transparent;border-radius:2px;color:var(--white);background:transparent;text-decoration:none;transition:all .15s}
+.s-nav-tab:hover{border-color:var(--yellow);color:var(--yellow)}
+.a-home,.a-contact{background:var(--yellow)!important;color:var(--black)!important;border-color:var(--yellow)!important}
+.a-comedy{background:var(--red)!important;color:white!important;border-color:var(--red)!important}
+.a-sports{background:var(--blue)!important;color:white!important;border-color:var(--blue)!important}
+.a-butwhy{background:var(--green)!important;color:white!important;border-color:var(--green)!important}
+.a-profiles{background:#7c3aed!important;color:white!important;border-color:#7c3aed!important}
+.s-home-grid{display:grid;grid-template-columns:1fr 1fr;min-height:calc(100vh - 55px)}
+.s-home-left{padding:70px 60px;display:flex;flex-direction:column;justify-content:center;border-right:2px solid var(--border)}
+.s-home-right{display:grid;grid-template-rows:1fr 1fr 1fr 1fr 1fr}
+.s-card{padding:30px 36px;border-bottom:2px solid var(--border)}
+.s-card:last-child{border-bottom:none}
+.s-sec-header{padding:44px 60px 28px;border-bottom:2px solid var(--border)}
+.s-subtabs{display:flex;padding:0 60px;border-bottom:2px solid var(--border);background:var(--white)}
+.s-subtab{padding:14px 24px;font-family:'${SF.mono}',monospace;font-size:12px;letter-spacing:1px;text-transform:uppercase}
+.s-content{padding:44px 60px}
+.s-contact-wrap{max-width:640px;margin:0 auto;padding:70px 40px}
+.s-contact-card{display:flex;align-items:center;gap:16px;padding:16px 20px;border:2px solid var(--border);border-radius:3px;background:var(--white);margin-bottom:10px}
+input[type=email]{flex:1;background:var(--white);border:2px solid var(--border);color:var(--black);font-family:'Instrument Sans',sans-serif;font-size:14px;padding:11px 15px;border-radius:3px;outline:none}
+input[type=email]:focus{border-color:var(--yellow);outline:none}
+.sib-form button[type=submit]{padding:11px 22px;background:var(--black);color:var(--yellow);font-family:'${SF.display}',sans-serif;font-size:17px;letter-spacing:2px;border:none;border-radius:3px;cursor:pointer;transition:background .15s}
+.sib-form button[type=submit]:hover{background:var(--yellow);color:var(--black)}
+</style>
+</head>
+<body>
+${bodyContent}
+</body>
+</html>`;
+}
+
+async function doExport() {
+  for (const key of Object.keys(FILENAMES)) {
+    const html = buildExportHTML(key);
+    await new Promise(res => {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([html],{type:'text/html'}));
+      a.download = FILENAMES[key];
+      a.click();
+      setTimeout(res, 500);
+    });
+  }
+  setTimeout(() => alert(
+    '✓ 6 files downloaded!\n\nUpload to GitHub with these paths:\n\n' +
+    Object.entries(GH_PATHS).map(([k,v]) => `${FILENAMES[k]}  →  ${v}`).join('\n') +
+    '\n\nIn GitHub: Add file → Create new file\nType the path above in the filename box.\nThe slash automatically creates the folder.'
+  ), 700);
+}
+
+// ══ INIT ══════════════════════════════════════════════════════════════
+render();
+</script>
+</body>
+</html>
