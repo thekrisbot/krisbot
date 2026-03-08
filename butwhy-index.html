@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>But Why Though — Krisbot</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#f0ead6;--black:#0e0e0e;--white:#f5f0e8;--yellow:#f7d94c;--red:#e03e2d;--blue:#2563eb;--green:#16a34a;--muted:#6b6b6b;--border:#d4ccb4;--purple:#7c3aed}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--cream);color:var(--black);font-family:'Instrument Sans',sans-serif;min-height:100vh}
+a{text-decoration:none;color:inherit}
+.s-nav{background:var(--black);padding:10px 32px;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid var(--yellow);position:sticky;top:0;z-index:100}
+.s-logo{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:3px;color:var(--yellow)}
+.s-logo-white{color:var(--white)}
+.s-nav-tabs{display:flex;gap:4px}
+.s-nav-tab{padding:8px 18px;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:1px;text-transform:uppercase;border:1.5px solid transparent;border-radius:2px;color:var(--white);background:transparent;text-decoration:none;transition:all .15s}
+.s-nav-tab:hover{border-color:var(--yellow);color:var(--yellow)}
+.a-home,.a-contact{background:var(--yellow)!important;color:var(--black)!important;border-color:var(--yellow)!important}
+.a-comedy{background:var(--red)!important;color:white!important;border-color:var(--red)!important}
+.a-sports{background:var(--blue)!important;color:white!important;border-color:var(--blue)!important}
+.a-butwhy{background:var(--green)!important;color:white!important;border-color:var(--green)!important}
+.a-profiles{background:var(--purple)!important;color:white!important;border-color:var(--purple)!important}
+.s-home-grid{display:grid;grid-template-columns:1fr 1fr;min-height:calc(100vh - 55px)}
+.s-home-left{padding:70px 60px;display:flex;flex-direction:column;justify-content:center;border-right:2px solid var(--border)}
+.s-home-right{display:grid;grid-template-rows:repeat(5,1fr)}
+.s-card{padding:28px 34px;border-bottom:2px solid var(--border)}
+.s-card:last-child{border-bottom:none}
+.s-sec-header{padding:44px 60px 28px;border-bottom:2px solid var(--border)}
+.s-subtabs{display:flex;padding:0 60px;border-bottom:2px solid var(--border);background:var(--white)}
+.s-subtab{padding:14px 24px;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:1px;text-transform:uppercase}
+.s-content{padding:44px 60px}
+.s-contact-wrap{max-width:640px;margin:0 auto;padding:70px 40px}
+.s-contact-card{display:flex;align-items:center;gap:16px;padding:16px 20px;border:2px solid var(--border);border-radius:3px;background:var(--white);margin-bottom:10px}
+.s-newsletter{background:var(--black);padding:48px 60px;border-top:3px solid var(--yellow)}
+input[type=email]{flex:1;background:var(--white);border:2px solid var(--border);color:var(--black);font-family:'Instrument Sans',sans-serif;font-size:14px;padding:11px 15px;border-radius:3px;outline:none}
+input[type=email]:focus{border-color:var(--yellow)}
+</style>
+</head>
+<body>
+<script src="/nav.js"></script>
+</div>
+<div class="s-sec-header">
+  <div style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--green);margin-bottom:10px">C · Section</div>
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:60px;letter-spacing:2px;line-height:1;color:var(--green);margin-bottom:10px">But Why Though</div>
+  <div style="font-family:'DM Serif Display',serif;font-style:italic;font-size:18px;color:var(--muted)">Essays on things that don't need essays but got them anyway</div>
+</div>
+<div class="s-content">
+  <div style="font-family:'DM Serif Display',serif;font-style:italic;font-size:22px;color:var(--border)">First essay coming soon.</div>
+</div>
+<div class="s-newsletter">
+  <div style="max-width:560px">
+    <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--yellow);margin-bottom:10px">✦ Newsletter</div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:40px;line-height:1;color:var(--white);margin-bottom:8px">GET NEW POSTS</div>
+    <div style="font-family:'DM Serif Display',serif;font-style:italic;font-size:16px;color:#888;margin-bottom:16px">Drop your email. I'll hit you when I publish something. No spam, ever.</div>
+    <div style="display:flex;gap:10px">
+      <input type="email" placeholder="your@email.com" style="flex:1;background:var(--white);border:2px solid var(--border);color:var(--black);font-family:'Instrument Sans',sans-serif;font-size:14px;padding:11px 15px;border-radius:3px;outline:none">
+      <button style="padding:11px 22px;background:var(--black);color:var(--yellow);font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:2px;border:2px solid var(--yellow);border-radius:3px;cursor:pointer">SUBSCRIBE</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>
