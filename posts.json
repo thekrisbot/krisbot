@@ -1,8 +1,19 @@
-  {
-    "title": "gay bar",
-    "subtitle": "Marco is ready to come out...",
-    "date": "2026-03-08",
-    "section": "comedy",
-    "subtab": "SNL Writing Packet",
-    "slug": "gay-bar"
+{
+  "subtabs": {
+    "comedy":    ["SNL Writing Packet", "Other Bits"],
+    "sew":       ["SEW Episodes", "Satire"],
+    "butwhy":    ["Essays"],
+    "profile":   ["Latest", "Archive"],
+    "attention": ["Essays", "Research"]
   },
+  "posts": [
+    {
+      "title": "gay bar",
+      "subtitle": "Marco is ready to come out...",
+      "date": "2026-03-08",
+      "section": "comedy",
+      "subtab": "SNL Writing Packet",
+      "slug": "gay-bar"
+    }
+  ]
+}
