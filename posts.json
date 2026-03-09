@@ -7,6 +7,14 @@
     "attention": ["Essays", "Research"]
   },
   "posts": [
+      {
+    "title": "24K Magic - A Bruno Mars misadventure",
+    "subtitle": "Bruno Mars? The guy from Maroon 5?",
+    "date": "2026-03-09",
+    "section": "comedy",
+    "subtab": "SNL Writing Packet",
+    "slug": "24k-magic---a-bruno-mars-misadventure"
+  },
     {
       "title": "gay bar",
       "subtitle": "Marco is ready to come out...",
