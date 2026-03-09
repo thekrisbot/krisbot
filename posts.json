@@ -16,5 +16,12 @@
       "subtab": "SNL Writing Packet",
       "slug": "gay-bar"
     }
-  ]
+  ],
+  "subtabs": {
+    "comedy": ["SNL Writing Packet", "Other Bits"],
+    "sew": ["SEW Episodes", "Satire"],
+    "butwhy": ["Essays"],
+    "profile": [],
+    "attention": []
+  }
 }
