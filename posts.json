@@ -1,11 +1,13 @@
-  {
-    "title": "24K Magic - The Bruno Mars Rabbit Hole",
-    "subtitle": "The man you don't know, the journey (also you don't know)",
-    "date": "2026-03-09",
-    "section": "comedy",
-    "subtab": "SNL Writing Packet",
-    "slug": "24k-magic---the-bruno-mars-rabbit-hole"
-  },
+{
+  "posts": [
+    {
+      "title": "24K Magic - The Bruno Mars Rabbit Hole",
+      "subtitle": "The man you don't know, the journey (also you don't know)",
+      "date": "2026-03-09",
+      "section": "comedy",
+      "subtab": "SNL Writing Packet",
+      "slug": "24k-magic---the-bruno-mars-rabbit-hole"
+    },
     {
       "title": "Gay Bar",
       "subtitle": "Marco is ready to come out...",
