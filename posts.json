@@ -1,19 +1,10 @@
-{
-  "subtabs": {
-    "comedy":    ["SNL Writing Packet", "Other Bits"],
-    "sew":       ["SEW Episodes", "Satire"],
-    "butwhy":    ["Essays"],
-    "profile":   ["Latest", "Archive"],
-    "attention": ["Essays", "Research"]
-  },
-  "posts": [
-      {
-    "title": "24K Magic - A Bruno Mars misadventure",
-    "subtitle": "Bruno Mars? The guy from Maroon 5?",
+  {
+    "title": "24K Magic - The Bruno Mars Rabbit Hole",
+    "subtitle": "The man you don't know, the journey (also you don't know)",
     "date": "2026-03-09",
     "section": "comedy",
     "subtab": "SNL Writing Packet",
-    "slug": "bruno-mars"
+    "slug": "24k-magic---the-bruno-mars-rabbit-hole"
   },
     {
       "title": "Gay Bar",
