@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Contact — Krisbot</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#f0ead6;--black:#0e0e0e;--white:#f5f0e8;--yellow:#f7d94c;--red:#e03e2d;--blue:#2563eb;--green:#16a34a;--purple:#7c3aed;--muted:#6b6b6b;--border:#d4ccb4}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--cream);color:var(--black);font-family:'Instrument Sans',sans-serif;min-height:100vh}
+a{text-decoration:none;color:inherit}
+
+.kb-nav{background:#0e0e0e;padding:10px 32px;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #f7d94c;position:sticky;top:0;z-index:100;font-family:'DM Mono',monospace}
+.kb-logo{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:3px;color:#f7d94c;text-decoration:none}
+.kb-logo-bot{color:#f5f0e8}
+.kb-tabs{display:flex;gap:4px;flex-wrap:wrap}
+.kb-tab{padding:8px 18px;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:1px;text-transform:uppercase;border:1.5px solid transparent;border-radius:2px;color:#fff;text-decoration:none;transition:all .15s}
+.kb-tab:hover{border-color:#f7d94c;color:#f7d94c}
+.kb-tab-active{background:#f7d94c;color:#000;border-color:#f7d94c}
+@media(max-width:900px){.kb-nav{flex-direction:column;gap:10px;padding:12px 20px}.kb-tabs{justify-content:center}}
+
+.contact-wrap{max-width:680px;margin:0 auto;padding:70px 40px}
+.contact-eyebrow{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
+.contact-title{font-family:'Bebas Neue',sans-serif;font-size:72px;line-height:1;margin-bottom:12px}
+.contact-sub{font-family:'DM Serif Display',serif;font-style:italic;font-size:19px;color:#333;margin-bottom:48px}
+
+.contact-section{margin-bottom:40px}
+.contact-section-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;padding-bottom:8px;border-bottom:1.5px solid var(--border)}
+
+.contact-card{display:flex;align-items:center;gap:16px;padding:16px 20px;border:2px solid var(--border);border-radius:3px;background:var(--white);margin-bottom:10px;transition:border-color .15s,background .15s}
+.contact-card:hover{border-color:var(--black);background:#fff}
+.contact-icon{font-size:22px;width:32px;text-align:center;flex-shrink:0}
+.contact-info{}
+.contact-info-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.contact-info-val{font-family:'DM Serif Display',serif;font-size:17px;color:var(--black)}
+a.contact-card .contact-info-val{color:var(--black)}
+a.contact-card:hover .contact-info-val{text-decoration:underline}
+</style>
+</head>
+<body>
+
+<nav class="kb-nav">
+  <a class="kb-logo" href="/"><span>KRIS</span><span class="kb-logo-bot">BOT</span></a>
+  <div class="kb-tabs">
+    <a class="kb-tab" href="/">Home</a>
+    <a class="kb-tab" href="/comedy">Comedy</a>
+    <a class="kb-tab" href="/sew">Sports (SEW)</a>
+    <a class="kb-tab" href="/butwhy">But Why Though</a>
+    <a class="kb-tab" href="/profile">Profiles</a>
+    <a class="kb-tab" href="/attention">Attention Economy</a>
+    <a class="kb-tab" href="/work">Work</a>
+    <a class="kb-tab kb-tab-active" href="/contact">Contact</a>
+  </div>
+</nav>
+
+<div class="contact-wrap">
+  <div class="contact-eyebrow">✦ get in touch</div>
+  <div class="contact-title">CONTACT</div>
+  <div class="contact-sub">Say hi, pitch something, or just lurk.</div>
+
+  <!-- PERSONAL -->
+  <div class="contact-section">
+    <div class="contact-section-label">Personal</div>
+    <a class="contact-card" href="mailto:hi@krisbot.lol">
+      <div class="contact-icon">✉️</div>
+      <div class="contact-info">
+        <div class="contact-info-label">Email</div>
+        <div class="contact-info-val">hi@krisbot.lol</div>
+      </div>
+    </a>
+  </div>
+
+  <!-- SEW -->
+  <div class="contact-section">
+    <div class="contact-section-label">Sports Entertainment Weekly</div>
+    <a class="contact-card" href="https://www.youtube.com/@sewthisweek" target="_blank">
+      <div class="contact-icon">▶️</div>
+      <div class="contact-info">
+        <div class="contact-info-label">YouTube</div>
+        <div class="contact-info-val">@sewthisweek</div>
+      </div>
+    </a>
+    <a class="contact-card" href="https://x.com/sewthisweek" target="_blank">
+      <div class="contact-icon">𝕏</div>
+      <div class="contact-info">
+        <div class="contact-info-label">Twitter / X</div>
+        <div class="contact-info-val">@sewthisweek</div>
+      </div>
+    </a>
+  </div>
+
+  <!-- OK BOOMER -->
+  <div class="contact-section">
+    <div class="contact-section-label">Ok Boomer!</div>
+    <a class="contact-card" href="https://www.youtube.com/@reachokboomer" target="_blank">
+      <div class="contact-icon">▶️</div>
+      <div class="contact-info">
+        <div class="contact-info-label">YouTube</div>
+        <div class="contact-info-val">@reachokboomer</div>
+      </div>
+    </a>
+  </div>
+
+</div>
+</body>
+</html>
