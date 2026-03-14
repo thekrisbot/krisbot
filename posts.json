@@ -1,6 +1,14 @@
 {
   "posts": [
     {
+      "title": "Oil Crisis",
+      "subtitle": "Geopolitics 101",
+      "date": "2026-03-13",
+      "section": "comedy",
+      "subtab": "SNL Writing Packet",
+      "slug": "oil-crisis"
+    },
+    {
       "title": "24K Magic - The Bruno Mars Rabbit Hole",
       "subtitle": "The man you don't know, the journey (also you don't know)",
       "date": "2026-03-09",
@@ -18,9 +26,17 @@
     }
   ],
   "subtabs": {
-    "comedy": ["SNL Writing Packet", "Other Bits"],
-    "sew": ["SEW Episodes", "Satire"],
-    "butwhy": ["Essays"],
+    "comedy": [
+      "SNL Writing Packet",
+      "Other Bits"
+    ],
+    "sew": [
+      "SEW Episodes",
+      "Satire"
+    ],
+    "butwhy": [
+      "Essays"
+    ],
     "profile": [],
     "attention": []
   }
