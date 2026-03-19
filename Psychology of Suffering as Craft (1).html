@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Suffering as Craft — A Psychological Map</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0e0d0b;
+    --bg2: #141310;
+    --bg3: #1a1916;
+    --surface: #201f1c;
+    --surface2: #272521;
+    --border: rgba(255,255,255,0.07);
+    --border-hover: rgba(255,255,255,0.14);
+    --text: #e8e4dc;
+    --text2: #9e9a92;
+    --text3: #5c5a54;
+    --amber: #c9893a;
+    --amber-dim: rgba(201,137,58,0.12);
+    --teal: #4a9e8a;
+    --teal-dim: rgba(74,158,138,0.12);
+    --purple: #8b72c8;
+    --purple-dim: rgba(139,114,200,0.12);
+    --blue: #5b8fc4;
+    --blue-dim: rgba(91,143,196,0.12);
+    --coral: #c4705a;
+    --coral-dim: rgba(196,112,90,0.12);
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --mono: 'DM Mono', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--serif);
+    font-size: 18px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 80px 32px 120px;
+  }
+
+  /* Header */
+  .header {
+    margin-bottom: 80px;
+    border-left: 1px solid var(--amber);
+    padding-left: 28px;
+  }
+
+  .header-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--amber);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .header h1 {
+    font-size: clamp(36px, 6vw, 64px);
+    font-weight: 300;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 28px;
+  }
+
+  .header h1 em {
+    font-style: italic;
+    color: var(--amber);
+  }
+
+  .header-body {
+    font-size: 17px;
+    color: var(--text2);
+    max-width: 600px;
+    line-height: 1.8;
+  }
+
+  .header-body p + p {
+    margin-top: 14px;
+  }
+
+  /* Section labels */
+  .section-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 20px;
+    margin-top: 64px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* Card grid */
+  .card-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+  }
+
+  @media (max-width: 600px) {
+    .card-grid { grid-template-columns: 1fr; }
+  }
+
+  .card-grid.single { grid-template-columns: 1fr; }
+
+  /* Theory card */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 28px 28px 24px;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card:hover {
+    background: var(--surface2);
+    border-color: var(--border-hover);
+  }
+
+  .card.expanded {
+    border-color: var(--border-hover);
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .card:hover::before, .card.expanded::before { opacity: 1; }
+
+  .card[data-color="amber"]::before { background: var(--amber); }
+  .card[data-color="teal"]::before { background: var(--teal); }
+  .card[data-color="purple"]::before { background: var(--purple); }
+  .card[data-color="blue"]::before { background: var(--blue); }
+  .card[data-color="coral"]::before { background: var(--coral); }
+
+  .card-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 2px;
+  }
+
+  [data-color="amber"] .card-tag { color: var(--amber); background: var(--amber-dim); }
+  [data-color="teal"] .card-tag { color: var(--teal); background: var(--teal-dim); }
+  [data-color="purple"] .card-tag { color: var(--purple); background: var(--purple-dim); }
+  [data-color="blue"] .card-tag { color: var(--blue); background: var(--blue-dim); }
+  [data-color="coral"] .card-tag { color: var(--coral); background: var(--coral-dim); }
+
+  .card-title {
+    font-size: 20px;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    margin-bottom: 6px;
+    line-height: 1.3;
+  }
+
+  .card-author {
+    font-size: 13px;
+    font-style: italic;
+    color: var(--text3);
+    margin-bottom: 16px;
+    font-family: var(--serif);
+  }
+
+  .card-summary {
+    font-size: 15px;
+    color: var(--text2);
+    line-height: 1.7;
+  }
+
+  /* Expandable detail */
+  .card-detail {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, opacity 0.3s ease;
+    opacity: 0;
+  }
+
+  .card.expanded .card-detail {
+    max-height: 800px;
+    opacity: 1;
+  }
+
+  .card-detail-inner {
+    border-top: 1px solid var(--border);
+    margin-top: 20px;
+    padding-top: 20px;
+  }
+
+  .card-detail-inner p {
+    font-size: 15px;
+    color: var(--text2);
+    line-height: 1.8;
+    margin-bottom: 14px;
+  }
+
+  .card-detail-inner p:last-child { margin-bottom: 0; }
+
+  .card-detail-inner strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .card-detail-inner em {
+    font-style: italic;
+  }
+
+  .card-quote {
+    border-left: 2px solid var(--border-hover);
+    padding-left: 16px;
+    margin: 16px 0;
+    font-size: 15px;
+    font-style: italic;
+    color: var(--text2);
+    line-height: 1.7;
+  }
+
+  [data-color="amber"] .card-quote { border-color: var(--amber); }
+  [data-color="teal"] .card-quote { border-color: var(--teal); }
+  [data-color="purple"] .card-quote { border-color: var(--purple); }
+  [data-color="blue"] .card-quote { border-color: var(--blue); }
+  [data-color="coral"] .card-quote { border-color: var(--coral); }
+
+  .expand-hint {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--text3);
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.2s;
+  }
+
+  .card:hover .expand-hint { color: var(--text2); }
+
+  .expand-hint::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-right: 1px solid currentColor;
+    border-bottom: 1px solid currentColor;
+    transform: rotate(45deg) translateY(-2px);
+    transition: transform 0.3s;
+  }
+
+  .card.expanded .expand-hint::before {
+    transform: rotate(-135deg) translateY(-2px);
+  }
+
+  .expand-hint-text::after { content: 'read more'; }
+  .card.expanded .expand-hint-text::after { content: 'collapse'; }
+
+  /* The question card */
+  .question-card {
+    margin-top: 80px;
+    padding: 40px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    position: relative;
+  }
+
+  .question-card::before {
+    content: '"';
+    position: absolute;
+    top: -20px;
+    left: 32px;
+    font-size: 80px;
+    color: var(--amber);
+    opacity: 0.4;
+    font-family: var(--serif);
+    line-height: 1;
+  }
+
+  .question-card p {
+    font-size: 22px;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--text);
+    line-height: 1.6;
+    letter-spacing: -0.01em;
+  }
+
+  .question-card .question-note {
+    margin-top: 16px;
+    font-size: 14px;
+    color: var(--text3);
+    font-style: normal;
+    font-family: var(--mono);
+  }
+
+  /* Footer */
+  .footer {
+    margin-top: 100px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text3);
+    letter-spacing: 0.1em;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <header class="header">
+    <div class="header-eyebrow">A psychological map</div>
+    <h1>Suffering<br>as <em>craft</em></h1>
+    <div class="header-body">
+      <p>Some people don't just endure difficulty — they choose it. They treat discomfort as a forge, a way of becoming. This is a distinct psychological orientation: not masochism, not martyrdom, but the deliberate use of voluntary friction to build character, sharpen focus, and earn one's own sense of self.</p>
+      <p>This map charts the psychological theories closest to that lived experience — the frameworks that name what it feels like to be someone who forges rather than avoids, who creates rather than accumulates, and who finds meaning in the gap between where they are and how far they still want to go.</p>
+    </div>
+  </header>
+
+  <div class="section-label">core drive</div>
+  <div class="card-grid">
+
+    <div class="card" data-color="teal" onclick="toggleCard(this)">
+      <span class="card-tag">Csikszentmihalyi</span>
+      <div class="card-title">Autotelic personality</div>
+      <div class="card-author">Mihaly Csikszentmihalyi — Flow (1990)</div>
+      <div class="card-summary">The work is the reward. People with autotelic personalities engage in activities for their intrinsic value — not for external recognition, money, or approval. They are self-directed, internally motivated, and find deep satisfaction in the process itself.</div>
+      <div class="card-detail">
+        <div class="card-detail-inner">
+          <p><strong>What it means:</strong> "Autotelic" comes from the Greek <em>auto</em> (self) and <em>telos</em> (goal). The goal is the doing. An autotelic person doesn't need the outcome to justify the effort — the effort <em>is</em> the outcome.</p>
+          <div class="card-quote">The mark of the autotelic person is the ability to manage the challenges of life with grace and equanimity — not because they have fewer problems, but because they have found a way to make the problems worth having.</div>
+          <p><strong>In practice:</strong> This explains why the shelf life for success is short. The satisfaction isn't really in the achievement — it's in the state of working toward something. Once achieved, the drive naturally seeks the next edge. This isn't a flaw. It's the engine.</p>
+          <p><strong>The shadow:</strong> Autotelic people can struggle in relationships and rest. When the work is always the point, stillness can feel purposeless. The challenge is learning that <em>being</em>, not just doing, can also be a form of engagement with life.</p>
+        </div>
+      </div>
+      <div class="expand-hint"><span class="expand-hint-text"></span></div>
+    </div>
+
+    <div class="card" data-color="teal" onclick="toggleCard(this)">
+      <span class="card-tag">Deci & Ryan</span>
+      <div class="card-title">Self-determination theory</div>
+      <div class="card-author">Edward Deci & Richard Ryan — 1985</div>
+      <div class="card-summary">Human beings have three core psychological needs: autonomy (self-direction), competence (mastery), and relatedness (connection). When all three are met through the work itself, motivation becomes intrinsic and deeply sustaining.</div>
+      <div class="card-detail">
+        <div class="card-detail-inner">
+          <p><strong>What it means:</strong> External rewards — money, likes, applause — can actually <em>undermine</em> intrinsic motivation if they become the reason for doing something. The most resilient creative people are those who have located their motivation inside the work, not outside it.</p>
+          <p><strong>Autonomy is key:</strong> Choosing your own suffering is fundamentally different from having it imposed on you. The voluntary nature of chosen difficulty — giving up sugar, leaving social media, committing to a craft — is what makes it self-determining rather than self-punishing.</p>
+          <p><strong>In practice:</strong> The discipline isn't restriction. It's a form of self-authorship. You are deciding what kind of person you are by deciding what you say no to. That's autonomy in its most literal form.</p>
+        </div>
+      </div>
+      <div class="expand-hint"><span class="expand-hint-text"></span></div>
+    </div>
+
+  </div>
+
+  <div class="section-label">suffering framework</div>
+  <div class="card-grid">
+
+    <div class="card" data-color="amber" onclick="toggleCard(this)">
+      <span class="card-tag">Stoicism</span>
+      <div class="card-title">Stoic askesis</div>
+      <div class="card-author">Marcus Aurelius, Epictetus, Seneca — c. 300 BCE–200 CE</div>
+      <div class="card-summary">Voluntary hardship as character training. The Stoics practiced <em>askesis</em> — deliberate exercises in discomfort — not as punishment, but as preparation. The goal was to remain undisturbed by what fortune brought, because you had already proven to yourself that you could endure.</div>
+      <div class="card-detail">
+        <div class="card-detail-inner">
+          <p><strong>The key distinction:</strong> The Stoics were not against comfort. Marcus Aurelius slept in a bed. Seneca was extraordinarily wealthy. The point was not deprivation — it was <em>non-attachment</em>. You can have comfort without needing it. The voluntary practice of going without proves you are the master of your circumstances, not their slave.</p>
+          <div class="card-quote">Seneca on voluntary poverty: "Set aside a certain number of days, during which you shall be content with the scantiest and cheapest fare, with coarse and rough dress, saying to yourself all the while: Is this the condition that I feared?"</div>
+          <p><strong>Epictetus's dichotomy:</strong> Divide all things into what is "up to us" (opinions, desires, actions) and what is "not up to us" (body, reputation, outcome). Suffering over the second category is irrational. Working hard on the first is everything.</p>
+          <p><strong>The forge metaphor:</strong> The Stoics used it explicitly. Adversity tests and reveals character. A warrior who has never been tested has never really been proved. The trials aren't incidental to the life — they are the content of it.</p>
+        </div>
+      </div>
+      <div class="expand-hint"><span class="expand-hint-text"></span></div>
+    </div>
+
+    <div class="card" data-color="amber" onclick="toggleCard(this)">
+      <span class="card-tag">Tedeschi & Calhoun</span>
+      <div class="card-title">Post-traumatic growth</div>
+      <div class="card-author">Richard Tedeschi & Lawrence Calhoun — 1996</div>
+      <div class="card-summary">Genuine hardship — not just discomfort but real rupture — can produce growth that wouldn't have been possible otherwise. This isn't resilience (bouncing back to baseline). It's transformation into something that could not have existed without the difficulty.</div>
+      <div class="card-detail">
+        <div class="card-detail-inner">
+          <p><strong>Five domains of growth:</strong> Personal strength, new possibilities, relating to others, appreciation of life, and spiritual or existential change. These aren't compensations for loss — they are genuinely new capacities that only the passage through difficulty can produce.</p>
+          <p><strong>Important nuance:</strong> PTG is not universal. Not all suffering produces growth. The difference lies in how the experience is processed — whether it's metabolized, made meaning of, and integrated into a revised sense of self. The suffering has to be worked with, not just endured.</p>
+          <p><strong>Voluntary vs involuntary:</strong> When you choose the difficulty, you have already begun the meaning-making process. You've decided, in advance, that this struggle has a purpose. That pre-existing frame dramatically increases the likelihood of growth rather than mere damage.</p>
+        </div>
+      </div>
+      <div class="expand-hint"><span class="expand-hint-text"></span></div>
+    </div>
+
+  </div>
+
+  <div class="section-label">identity & narrative</div>
+  <div class="card-grid">
+
+    <div class="card" data-color="coral" onclick="toggleCard(this)">
+      <span class="card-tag">Jung / Campbell</span>
+      <div class="card-title">The hero's journey archetype</div>
+      <div class="card-author">Carl Jung & Joseph Campbell — The Hero with a Thousand Faces (1949)</div>
+      <div class="card-summary">Across every human culture and mythology, the same story recurs: a person is called away from comfort, passes through trials and the underworld, and returns transformed. This isn't just a story structure — Jung believed it maps the actual topology of psychological development.</div>
+      <div class="card-detail">
+        <div class="card-detail-inner">
+          <p><strong>The monomyth:</strong> Departure → Initiation → Return. The hero must leave the known world, descend into darkness and difficulty, die symbolically, and be reborn. The trials are not obstacles to the journey. They <em>are</em> the journey.</p>
+          <p><strong>The critical warning:</strong> The myth can be romanticised. Van Gogh's story — genius, suffering, death, posthumous glory — becomes seductive not as description but as prescription. People begin to feel that suffering <em>proves</em> something about their seriousness as artists. This is the myth working against you.</p>
+          <div class="card-quote">Campbell: "The cave you fear to enter holds the treasure you seek." — but note: the point is to come back out with the treasure. The hero doesn't stay in the cave.</div>
+          <p><strong>The return matters:</strong> In every version of the hero's journey, the hero returns. They bring back something — wisdom, a boon, a gift for the community. A person who stays permanently in the descent phase is not being heroic. They are stuck.</p>
+        </div>
+      </div>
+      <div class="expand-hint"><span class="expand-hint-text"></span></div>
+    </div>
+
+    <div class="card" data-color="coral" onclick="toggleCard(this)">
+      <span class="card-tag">McAdams</span>
+      <div class="card-title">Narrative identity theory</div>
+      <div class="card-author">Dan McAdams — The Stories We Live By (1993)</div>
+      <div class="card-summary">We construct identity by telling ourselves a story about our own life — with a protagonist, a tone, themes, and a direction. The stories we tell about who we are shape, in turn, who we become. Suffering becomes meaningful when it is written into the story as necessary, not accidental.</div>
+      <div class="card-detail">
+        <div class="card-detail-inner">
+          <p><strong>Contamination vs redemption sequences:</strong> McAdams found that psychologically healthy adults tend to construct "redemption sequences" — moments where something bad leads to something good. Less healthy narratives run "contamination sequences" — where something good gets ruined. The craft orientation is a redemption architecture: hardship → growth → meaning.</p>
+          <p><strong>You are the author:</strong> The most powerful insight is that the narrative isn't just something that happens to you — it's something you are actively writing. When you choose difficulty, you are making a narrative choice. You are saying: "This chapter is about what I am building, not what I am suffering from."</p>
+          <p><strong>The danger:</strong> If the story requires suffering to feel real, you may unconsciously generate it — even when things go well. Watch for the impulse to make things harder than they need to be, not as forge, but as plot device.</p>
+        </div>
+      </div>
+      <div class="expand-hint"><span class="expand-hint-text"></span></div>
+    </div>
+
+  </div>
+
+  <div class="section-label">the creative engine</div>
+  <div class="card-grid">
+
+    <div class="card" data-color="purple" onclick="toggleCard(this)">
+      <span class="card-tag">Rollo May</span>
+      <div class="card-title">The creative daimonic</div>
+      <div class="card-author">Rollo May — The Courage to Create (1975)</div>
+      <div class="card-summary">The daimonic is any natural force that can take over a person: anger, erotic love, the will to create. It is neither good nor evil — it is power. The creative person is not someone who tamed the daimonic but someone who learned to work <em>with</em> it without being destroyed by it.</div>
+      <div class="card-detail">
+        <div class="card-detail-inner">
+          <p><strong>The restlessness is the engine:</strong> That feeling of "did that — what's next" is the daimonic refusing to settle. It is not ingratitude or shallowness. It is the force that makes the work happen. To try to extinguish it would be to extinguish the creative impulse itself.</p>
+          <div class="card-quote">May: "The creative process must be explored not as the product of sickness, but as representing the highest degree of emotional health, as the expression of the normal people in the act of actualizing themselves."</div>
+          <p><strong>The courage to create:</strong> May's central argument is that creativity requires anxiety. Not comfort. Not ease. The artist must stand in the anxiety of not-yet-knowing, resist the urge to resolve it prematurely, and hold the tension until something genuine emerges. The discomfort is not incidental. It is the condition of creation.</p>
+          <p><strong>The shadow of the daimonic:</strong> When the daimonic is suppressed, it returns destructively — as depression, rage, compulsion, numbness. When it is integrated, it becomes the driving force of a genuinely lived life. The craft orientation is a form of daimonic integration.</p>
+        </div>
+      </div>
+      <div class="expand-hint"><span class="expand-hint-text"></span></div>
+    </div>
+
+    <div class="card" data-color="purple" onclick="toggleCard(this)">
+      <span class="card-tag">Brickman & Campbell</span>
+      <div class="card-title">Hedonic adaptation</div>
+      <div class="card-author">Philip Brickman & Donald Campbell — 1971</div>
+      <div class="card-summary">The human brain adapts to almost any positive change within weeks or months, returning emotional baseline to roughly where it started. Fame, money, achievement — the high dissolves faster than expected. This is not a character flaw. It is neurology.</div>
+      <div class="card-detail">
+        <div class="card-detail-inner">
+          <p><strong>The hedonic treadmill:</strong> Each achievement raises the baseline expectation. What excited you last year is ordinary this year. The finish line keeps moving. For most people, this is a source of chronic dissatisfaction. For the autotelic person, it is the entire point — the treadmill <em>keeps them moving</em>.</p>
+          <p><strong>Why Conan's "short shelf life" is adaptive:</strong> The quick fade of satisfaction is not emotional dysfunction — it is a perfectly calibrated response for someone whose meaning comes from the process, not the outcome. If the glow lasted a year, you would stop working. The fast reset keeps the engine running.</p>
+          <p><strong>The risk to watch:</strong> Hedonic adaptation also affects negative states. Chronic low-level suffering can become so familiar that it feels like baseline — and the absence of it feels threatening. This is where chosen discipline can shade into unchosen habit, where the forge becomes the only mode you know.</p>
+        </div>
+      </div>
+      <div class="expand-hint"><span class="expand-hint-text"></span></div>
+    </div>
+
+  </div>
+
+  <div class="section-label">shadow side — watch points</div>
+  <div class="card-grid">
+
+    <div class="card" data-color="blue" onclick="toggleCard(this)">
+      <span class="card-tag">Seligman</span>
+      <div class="card-title">Learned helplessness</div>
+      <div class="card-author">Martin Seligman — 1967</div>
+      <div class="card-summary">When organisms experience prolonged hardship with no perceived route of escape, they stop trying — even when escape later becomes available. The nervous system concludes: "this is just how life is." Not weakness. A rational adaptation to sustained powerlessness.</div>
+      <div class="card-detail">
+        <div class="card-detail-inner">
+          <p><strong>Why it matters here:</strong> Chosen suffering and learned helplessness look superficially similar from the outside — both involve staying in difficulty. The difference is entirely internal: is the difficulty chosen and purposeful, or is it endured because escape no longer feels possible?</p>
+          <p><strong>The diagnostic question:</strong> Could you choose ease right now, genuinely, without guilt or anxiety? If yes — you are forging. If the thought of ease feels threatening, forbidden, or like a betrayal of who you are — that is worth examining more closely.</p>
+          <p><strong>Seligman's antidote:</strong> Learned optimism — not naive positivity, but the disciplined practice of finding what <em>is</em> controllable in any situation. Interestingly, this is structurally identical to Stoic <em>dichotomy of control</em>. Both frameworks converge on the same move: locate the sphere of your agency and work it hard.</p>
+        </div>
+      </div>
+      <div class="expand-hint"><span class="expand-hint-text"></span></div>
+    </div>
+
+    <div class="card" data-color="blue" onclick="toggleCard(this)">
+      <span class="card-tag">Psychodynamics</span>
+      <div class="card-title">Enmeshment with pain</div>
+      <div class="card-author">Object relations theory / attachment literature</div>
+      <div class="card-summary">Over time, suffering stops being something that happens to you and begins to feel like something that <em>is</em> you. Identity becomes fused with the struggle. Ease feels threatening — not because it is bad, but because it is unrecognisable.</div>
+      <div class="card-detail">
+        <div class="card-detail-inner">
+          <p><strong>How it develops:</strong> In environments where struggle was constant and early, the nervous system learns to equate familiarity with safety. The familiar is painful — but at least it is known. Comfort, by contrast, is foreign territory. The brain flags it as suspicious.</p>
+          <p><strong>The difference from chosen difficulty:</strong> Chosen difficulty is entered consciously and can be exited. Enmeshment is invisible — you don't feel like you're choosing the suffering; you feel like you simply <em>are</em> a person for whom things are hard. There is no felt sense of agency in it.</p>
+          <p><strong>A useful self-check:</strong> When good things happen — genuine good, not just relief — is the first feeling joy, or is it anxiety about when it will end? Anticipatory grief for good fortune is one of the clearest signs that suffering has become structural rather than chosen.</p>
+        </div>
+      </div>
+      <div class="expand-hint"><span class="expand-hint-text"></span></div>
+    </div>
+
+    <div class="card" data-color="blue" onclick="toggleCard(this)">
+      <span class="card-tag">Cultural myth</span>
+      <div class="card-title">The romantic suffering myth</div>
+      <div class="card-author">Van Gogh archetype / artistic martyrology</div>
+      <div class="card-summary">The artist who suffers most nobly is the most real. The myth conflates suffering with depth and worldly failure with artistic integrity. It is seductive because it transforms misery into credential — and makes success feel like a betrayal of seriousness.</div>
+      <div class="card-detail">
+        <div class="card-detail-inner">
+          <p><strong>What the Van Gogh myth actually says:</strong> The story told is: he suffered → he was ignored → he died broke → he was posthumously recognised as a genius. The implicit logic: suffering + obscurity = real art. This is backwards. He made great work <em>despite</em> his suffering, mostly during periods of relative stability.</p>
+          <p><strong>The credential trap:</strong> When suffering becomes proof of artistic seriousness, you have subtly inverted the relationship between process and outcome. Now the suffering serves the identity rather than the work. You need it to feel legitimate — which means you will unconsciously reproduce it.</p>
+          <p><strong>The healthier model:</strong> Artists who have spoken honestly about this — Conan O'Brien, for one — describe a relationship with work where the making is the point, the recognition is welcome but not validating, and the suffering, when it comes, is metabolised rather than performed. That is a fundamentally different architecture.</p>
+        </div>
+      </div>
+      <div class="expand-hint"><span class="expand-hint-text"></span></div>
+    </div>
+
+  </div>
+
+  <div class="section-label">the anchors — what you protect</div>
+  <div class="card-grid">
+
+    <div class="card" data-color="teal" onclick="toggleCard(this)">
+      <span class="card-tag">Bowlby / Ainsworth</span>
+      <div class="card-title">Secure base theory</div>
+      <div class="card-author">John Bowlby & Mary Ainsworth — Attachment Theory</div>
+      <div class="card-summary">Exploration and risk-taking are only possible from a position of felt security. The "secure base" is not a weakness — it is the precondition for everything bold. Without it, the nervous system cannot afford to venture out. With it, almost anything becomes possible.</div>
+      <div class="card-detail">
+        <div class="card-detail-inner">
+          <p><strong>The counterintuitive insight:</strong> The chips and the pillows are not failures of discipline. They are the hearth. The goldsmith doesn't put the forge in the fire. The anchors are the stable base from which the risk-taking is possible. Remove them and you haven't become more disciplined — you've destabilised the platform.</p>
+          <p><strong>Applied to adult creativity:</strong> Later attachment researchers extended the secure base concept to adult life. Creative people often have non-negotiable rituals, environments, or comforts that they protect fiercely — not because they are weak, but because they know, consciously or not, that these are load-bearing.</p>
+          <p><strong>Wisdom in what you protect:</strong> The ability to distinguish between the comforts worth surrendering (the ones that soften your edge) and the ones worth guarding (the ones that make the edge possible) is itself a form of self-knowledge. Most people can't do it. You seem to be doing it intuitively.</p>
+        </div>
+      </div>
+      <div class="expand-hint"><span class="expand-hint-text"></span></div>
+    </div>
+
+    <div class="card" data-color="teal" onclick="toggleCard(this)">
+      <span class="card-tag">Baumeister & Tierney</span>
+      <div class="card-title">Ego depletion & restoration</div>
+      <div class="card-author">Roy Baumeister — Willpower (2011)</div>
+      <div class="card-summary">Self-control draws on a limited cognitive resource. Acts of discipline and resistance deplete it. Rest, pleasure, and restoration replenish it. The person who never rests is not more disciplined — they are running on debt, and the debt will be called in.</div>
+      <div class="card-detail">
+        <div class="card-detail-inner">
+          <p><strong>The structure of sustainable discipline:</strong> Contrary to the myth of iron will, the most sustained performers across creative and athletic fields structure deliberate recovery. The discomfort of the forge requires the restoration of the hearth. These are not in opposition — they are a cycle.</p>
+          <p><strong>Note on the research:</strong> Baumeister's original "glucose depletion" mechanism has been partially challenged in replication studies. The broader principle — that willpower is finite and restoration matters — remains well-supported, even if the exact neurological mechanism is debated.</p>
+          <p><strong>In practice:</strong> Knowing which comforts restore you (rather than merely distract you) is a form of craft knowledge. The chips and the pillows restore something. Endless scrolling probably doesn't. The distinction matters for how you protect your energy.</p>
+        </div>
+      </div>
+      <div class="expand-hint"><span class="expand-hint-text"></span></div>
+    </div>
+
+  </div>
+
+  <!-- The central question -->
+  <div class="question-card">
+    <p>Is the suffering something you are moving through — or something you have made a home in?</p>
+    <div class="question-note">The forge is a place you pass through. The gold is what comes out the other side.</div>
+  </div>
+
+  <footer class="footer">
+    <span>Suffering as Craft — A Psychological Map</span>
+    <span>click any card to expand</span>
+  </footer>
+
+</div>
+
+<script>
+  function toggleCard(card) {
+    const wasExpanded = card.classList.contains('expanded');
+    card.classList.toggle('expanded', !wasExpanded);
+  }
+</script>
+</body>
+</html>
