@@ -1,0 +1,1486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Krisbot CMS</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0e0e0e; --panel: #141414; --border: #222; --muted: #444;
+  --text: #ccc; --bright: #f0ead6; --yellow: #f7d94c;
+  --red: #e03e2d; --blue: #2563eb; --green: #16a34a; --purple: #7c3aed;
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Instrument Sans', sans-serif; }
+
+/* PASSWORD SCREEN */
+.lock-screen { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 9999; flex-direction: column; gap: 24px; }
+.lock-screen.hidden { display: none; }
+.lock-logo { font-family: 'Bebas Neue', sans-serif; font-size: 36px; letter-spacing: 4px; color: var(--yellow); }
+.lock-logo small { font-family: 'DM Mono', monospace; font-size: 10px; color: #444; letter-spacing: 2px; margin-left: 8px; }
+.lock-box { display: flex; flex-direction: column; gap: 12px; width: 280px; }
+.lock-input { background: #111; border: 1px solid #333; color: var(--bright); font-family: 'Instrument Sans', sans-serif; font-size: 15px; padding: 12px 14px; border-radius: 2px; outline: none; transition: border-color .15s; }
+.lock-input:focus { border-color: var(--yellow); }
+.lock-btn { padding: 11px; background: var(--yellow); color: #000; font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 2px; border: none; border-radius: 2px; cursor: pointer; transition: background .12s; }
+.lock-btn:hover { background: #fff; }
+.lock-error { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--red); text-align: center; min-height: 16px; letter-spacing: 1px; }
+
+.shell { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+
+/* TOP BAR */
+.topbar {
+  background: #090909; border-bottom: 2px solid var(--yellow);
+  flex-shrink: 0; position: relative; z-index: 200;
+}
+.topbar-row1 {
+  height: 46px; display: flex; align-items: center; justify-content: space-between;
+  padding: 0 20px; gap: 12px; border-bottom: 1px solid #1a1a1a;
+}
+
+.logo { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 3px; color: var(--yellow); white-space: nowrap; }
+.logo small { font-family: 'DM Mono', monospace; font-size: 9px; color: #444; letter-spacing: 2px; margin-left: 8px; }
+
+.meta-row { display: flex; align-items: center; gap: 8px; flex: 1; justify-content: center; flex-wrap: wrap; }
+.meta-input {
+  background: #111; border: 1px solid var(--border); color: var(--bright);
+  font-family: 'Instrument Sans', sans-serif; font-size: 13px;
+  padding: 6px 10px; border-radius: 2px; outline: none; transition: border-color .15s;
+}
+.meta-input:focus { border-color: var(--yellow); }
+.meta-input::placeholder { color: #333; }
+
+.section-pick { display: flex; gap: 3px; }
+.spick {
+  padding: 5px 10px; font-family: 'DM Mono', monospace; font-size: 9px;
+  letter-spacing: 1px; text-transform: uppercase; border: 1px solid var(--border);
+  background: none; color: var(--muted); cursor: pointer; border-radius: 2px; transition: all .12s;
+}
+.spick:hover { color: var(--text); border-color: #444; }
+.spick.on { font-weight: 700; }
+.spick[data-s="comedy"].on  { background: var(--red);    color: white; border-color: var(--red); }
+.spick[data-s="sew"].on     { background: var(--blue);   color: white; border-color: var(--blue); }
+.spick[data-s="butwhy"].on  { background: var(--green);  color: white; border-color: var(--green); }
+.spick[data-s="attention"].on { background: #1a1060; color: white; border-color: #1a1060; }
+.stpick.on { background: var(--yellow); color: #000; border-color: var(--yellow); }
+.tag-attention { background: #1a1060; color: white; }
+
+.pub-btn {
+  padding: 7px 20px; background: var(--yellow); color: #000;
+  font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 2px;
+  border: none; border-radius: 2px; cursor: pointer; white-space: nowrap; transition: all .12s; flex-shrink: 0;
+}
+.pub-btn:hover { background: #fff; }
+.pub-btn:disabled { background: #252525; color: #444; cursor: default; }
+
+/* BODY */
+.body { display: flex; flex: 1; overflow: hidden; }
+
+/* TOOLBAR */
+.toolbar {
+  width: 50px; background: var(--panel); border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; align-items: center;
+  padding: 14px 0; gap: 3px; flex-shrink: 0;
+}
+.tool {
+  width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;
+  border: 1px solid transparent; border-radius: 2px; cursor: pointer;
+  color: var(--muted); font-size: 13px; font-family: 'DM Mono', monospace;
+  background: none; transition: all .1s; position: relative;
+}
+.tool:hover { border-color: var(--border); color: var(--text); }
+.tool.active { background: var(--yellow); color: #000; border-color: var(--yellow); }
+.tool-sep { width: 22px; height: 1px; background: var(--border); margin: 3px 0; }
+.tool[title]:hover::after {
+  content: attr(title); position: absolute; left: 44px; top: 50%; transform: translateY(-50%);
+  background: #1a1a1a; border: 1px solid var(--border); color: var(--text);
+  font-family: 'DM Mono', monospace; font-size: 10px; padding: 4px 8px;
+  border-radius: 2px; white-space: nowrap; z-index: 10; pointer-events: none;
+}
+
+/* EDITOR AREA */
+.editor-wrap { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+.wc-bar {
+  padding: 5px 72px; background: #0a0a0a; border-bottom: 1px solid var(--border);
+  font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted);
+  display: flex; gap: 20px; flex-shrink: 0;
+}
+
+.split { display: flex; flex: 1; overflow: hidden; }
+
+.write-col { flex: 1; overflow-y: auto; padding: 52px 72px; background: #f0ead6; color: #1a1a1a; }
+.write-inner { max-width: 660px; margin: 0 auto; }
+
+/* Live title / meta preview above editor */
+.pre-title {
+  font-family: 'Bebas Neue', sans-serif; font-size: 54px; letter-spacing: 2px;
+  color: #1a1a1a; line-height: 1; margin-bottom: 8px;
+  opacity: .15; transition: opacity .2s; min-height: 56px;
+}
+.pre-title.has { opacity: 1; }
+.pre-sub { font-family: 'DM Serif Display', serif; font-style: italic; font-size: 20px; color: #6b6b6b; margin-bottom: 6px; min-height: 24px; }
+.pre-meta { font-family: 'DM Mono', monospace; font-size: 11px; color: #888; margin-bottom: 44px; display: flex; align-items: center; gap: 10px; }
+.pre-meta .tag { padding: 3px 8px; border-radius: 2px; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; }
+.tag-comedy  { background: var(--red);    color: white; }
+.tag-sew     { background: var(--blue);   color: white; }
+.tag-butwhy  { background: var(--green);  color: white; }
+.tag-profile { background: var(--purple); color: white; }
+.tag-none    { background: #d4ccb4; color: #888; }
+.pre-divider { height: 3px; width: 40px; background: #e03e2d; margin-bottom: 44px; }
+
+/* THE EDITOR */
+#editor {
+  min-height: 400px; outline: none;
+  font-family: 'Instrument Sans', sans-serif; font-size: 17px; line-height: 1.85;
+  font-weight: 300; color: #2a2a2a; caret-color: #e03e2d;
+}
+#editor * { font-family: inherit; }
+#editor strong, #editor b { font-weight: 700; color: #0e0e0e; font-family: 'DM Serif Display', serif; }
+#editor em, #editor i { font-style: italic; color: #555; font-weight: 300; font-family: 'Instrument Sans', sans-serif; }
+#editor strong em, #editor b em { font-weight: 300 !important; font-family: 'Instrument Sans', sans-serif; font-style: italic; color: #6b6b6b; }
+#editor:empty::before { content: "Start writing. Paste from Google Docs, or type directly."; color: #bbb; pointer-events: none; }
+#editor p { margin-bottom: 1.2em; color: #1a1a1a; }
+#editor h2 { font-family: 'Bebas Neue', sans-serif !important; font-size: 38px; letter-spacing: 1px; color: #0e0e0e !important; margin: 1.8em 0 .6em; line-height: 1; }
+#editor h3 { font-family: 'DM Mono', monospace !important; font-size: 12px; letter-spacing: 3px; text-transform: uppercase; color: #6b6b6b !important; margin: 1.4em 0 .5em; }
+#editor ul, #editor ol { padding-left: 1.5em; margin-bottom: 1.2em; }
+#editor li { margin-bottom: .4em; }
+#editor blockquote { border-left: 3px solid #e03e2d; padding-left: 20px; color: #6b6b6b !important; font-style: italic; margin: 1.4em 0; }
+#editor a { color: #4a9eff !important; text-decoration: underline; }
+#editor .yt-block { background: #e8e2ce; border: 1px solid #d4ccb4; border-radius: 3px; padding: 14px 16px; margin: 1.4em 0; font-family: 'DM Mono', monospace; font-size: 11px; color: #6b6b6b; display: flex; align-items: center; gap: 10px; user-select: none; }
+#editor .yt-block::before { content: "▶"; color: var(--red); font-size: 16px; }
+
+/* PREVIEW PANEL */
+.preview-col { width: 400px; border-left: 1px solid var(--border); overflow-y: auto; background: #f0ead6; flex-shrink: 0; display: none; }
+.preview-col.open { display: block; }
+.prev-inner { padding: 36px 32px; }
+.prev-tag { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; padding: 4px 10px; border-radius: 2px; display: inline-block; margin-bottom: 14px; }
+.prev-ttl { font-family: 'Bebas Neue', sans-serif; font-size: 42px; letter-spacing: 1px; line-height: 1; color: #0e0e0e; margin-bottom: 10px; }
+.prev-sub { font-family: 'DM Serif Display', serif; font-style: italic; font-size: 17px; color: #555; margin-bottom: 8px; line-height: 1.5; }
+.prev-met { font-family: 'DM Mono', monospace; font-size: 10px; color: #888; margin-bottom: 22px; }
+.prev-div { width: 30px; height: 2px; margin-bottom: 22px; }
+.prev-bod { font-family: 'DM Serif Display', serif; font-size: 16px; line-height: 1.8; color: #1a1a1a; }
+.prev-bod h2 { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 1px; margin: 1.4em 0 .5em; }
+.prev-bod h3 { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: #888; margin: 1.2em 0 .4em; }
+.prev-bod p { margin-bottom: 1em; }
+.prev-bod ul, .prev-bod ol { padding-left: 1.4em; margin-bottom: 1em; }
+.prev-bod blockquote { border-left: 2px solid #ccc; padding-left: 14px; color: #555; font-style: italic; margin: 1.2em 0; }
+.prev-bod strong { font-weight: 700; }
+
+/* MODALS */
+.modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,.85); display: none; align-items: center; justify-content: center; z-index: 100; }
+.modal-bg.open { display: flex; }
+.modal { background: var(--panel); border: 1px solid var(--border); border-top: 2px solid var(--yellow); padding: 28px; border-radius: 2px; }
+.modal h3 { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; }
+.modal input { width: 100%; background: #0d0d0d; border: 1px solid var(--border); color: var(--bright); font-family: 'Instrument Sans', sans-serif; font-size: 14px; padding: 10px 12px; border-radius: 2px; outline: none; margin-bottom: 12px; }
+.modal input:focus { border-color: var(--yellow); }
+.mbtn-row { display: flex; gap: 8px; justify-content: flex-end; }
+.mbtn { padding: 7px 16px; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; border-radius: 2px; cursor: pointer; border: 1px solid; transition: all .1s; }
+.mbtn-y { background: var(--yellow); color: #000; border-color: var(--yellow); font-weight: 700; }
+.mbtn-y:hover { background: #fff; border-color: #fff; }
+.mbtn-g { background: none; color: var(--muted); border-color: var(--border); }
+.mbtn-g:hover { color: var(--text); border-color: #555; }
+
+/* PAGE TOOLBAR BUTTONS */
+.ptool {
+  width:30px;height:30px;display:flex;align-items:center;justify-content:center;
+  border:1px solid #d4ccb4;border-radius:2px;cursor:pointer;
+  color:#666;font-size:13px;font-family:'DM Mono',monospace;
+  background:#f5f0e8;transition:all .1s;
+}
+.ptool:hover{background:#e8e2ce;border-color:#bbb;color:#1a1a1a}
+.ptool.active{background:#0e0e0e;color:var(--yellow);border-color:#0e0e0e}
+
+/* RICH PAGE FIELD */
+.page-field-wrap{margin-bottom:28px}
+.page-field-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#888;margin-bottom:6px;display:block}
+.page-rich-field{
+  min-height:44px;padding:12px 14px;background:#fff;border:2px solid #d4ccb4;
+  border-radius:2px;font-family:'Instrument Sans',sans-serif;font-weight:300;
+  font-size:16px;line-height:1.7;color:#1a1a1a;outline:none;transition:border-color .15s;
+}
+.page-rich-field:focus{border-color:#0e0e0e}
+.page-rich-field.single-line{min-height:auto;white-space:nowrap;overflow:hidden}
+.page-rich-field strong,.page-rich-field b{font-weight:700;font-family:'DM Serif Display',serif}
+.page-rich-field em,.page-rich-field i{font-style:italic;font-family:'Instrument Sans',sans-serif;font-weight:300}
+.page-rich-field h2{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:1px;margin:.8em 0 .3em}
+.page-rich-field h3{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#888;margin:.8em 0 .3em}
+.page-rich-field blockquote{border-left:3px solid #e03e2d;padding-left:16px;color:#888;font-style:italic;margin:.8em 0}
+.page-rich-field ul,.page-rich-field ol{padding-left:1.4em;margin:.5em 0}
+
+#pub-modal .modal { width: 500px; }
+.pub-step { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 18px; padding-bottom: 18px; border-bottom: 1px solid var(--border); }
+.pub-step:last-of-type { border-bottom: none; margin-bottom: 8px; padding-bottom: 0; }
+.pub-num { width: 28px; height: 28px; background: var(--yellow); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 17px; flex-shrink: 0; margin-top: 2px; }
+.pub-body { flex: 1; }
+.pub-stitle { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--text); margin-bottom: 5px; }
+.pub-sdesc { font-size: 12px; color: var(--muted); line-height: 1.6; }
+.pub-path { font-family: 'DM Mono', monospace; font-size: 12px; background: #0d0d0d; border: 1px solid var(--border); color: var(--yellow); padding: 7px 11px; border-radius: 2px; margin-top: 8px; display: inline-block; }
+.act-btn { padding: 6px 12px; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; background: none; border: 1px solid var(--border); color: var(--muted); cursor: pointer; border-radius: 2px; margin-top: 8px; transition: all .1s; display: inline-block; text-decoration: none; }
+.act-btn:hover { border-color: var(--yellow); color: var(--yellow); }
+.act-btn.done { border-color: var(--green); color: var(--green); }
+</style>
+</head>
+<body>
+<script>
+// Kill the site nav if it tries to inject itself
+window.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('nav').forEach(n => n.remove());
+});
+</script>
+
+<div class="lock-screen" id="lock-screen">
+  <div class="lock-logo">KRISBOT <small>/ ADMIN</small></div>
+  <div class="lock-box">
+    <input class="lock-input" id="lock-input" type="password" placeholder="Password...">
+    <button type="button" class="lock-btn" id="lock-btn">ENTER →</button>
+    <div class="lock-error" id="lock-error"></div>
+  </div>
+</div>
+
+<div class="shell" id="shell" style="display:none">
+
+  <div class="topbar">
+    <!-- Row 1: logo + mode tabs + publish -->
+    <div class="topbar-row1">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="logo">KRISBOT <small>/ CMS</small></div>
+        <div style="display:flex;gap:2px">
+          <button id="mode-post-btn" onclick="setMode('post')" style="padding:4px 11px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;border:1px solid var(--yellow);background:var(--yellow);color:#000;border-radius:2px;cursor:pointer">✏ Post</button>
+          <button id="mode-page-btn" onclick="setMode('page')" style="padding:4px 11px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;border:1px solid var(--border);background:none;color:var(--muted);border-radius:2px;cursor:pointer">⊞ Pages</button>
+          <button id="mode-health-btn" onclick="setMode('health')" style="padding:4px 11px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;border:1px solid var(--border);background:none;color:var(--muted);border-radius:2px;cursor:pointer">🔗 Site Health</button>
+        </div>
+      </div>
+      <button class="pub-btn" id="pub-btn" onclick="openPub()" disabled>PUBLISH →</button>
+    </div>
+    <!-- Row 2: post meta inputs (only visible in Post mode) -->
+
+    <!-- Row 2 alt: page picker (only visible in Pages mode) -->
+    <div class="topbar-row2" id="page-meta-row" style="display:none;">
+      <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-right:4px">Editing:</span>
+      <div style="display:flex;gap:3px" id="page-pick-row">
+        <button class="spick on" data-p="home"      onclick="pickPage(this)" style="background:var(--yellow);color:#000;border-color:var(--yellow)">Home</button>
+        <button class="spick" data-p="comedy"    onclick="pickPage(this)">Comedy</button>
+        <button class="spick" data-p="sew"       onclick="pickPage(this)">SEW</button>
+        <button class="spick" data-p="butwhy"    onclick="pickPage(this)">But Why</button>
+        <button class="spick" data-p="profile"   onclick="pickPage(this)">Profiles</button>
+        <button class="spick" data-p="attention" onclick="pickPage(this)">Attention</button>
+        <button class="spick" data-p="contact"   onclick="pickPage(this)">Contact</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="body" id="post-mode-body" style="display:flex">
+    <div class="toolbar">
+      <button class="tool" title="Bold (⌘B)"   onclick="fmt('bold')"><b>B</b></button>
+      <button class="tool" title="Italic (⌘I)" onclick="fmt('italic')"><i>I</i></button>
+      <div class="tool-sep"></div>
+      <button class="tool" title="Section heading"    onclick="fmt('h2')" style="font-size:11px">H2</button>
+      <button class="tool" title="Subheading"          onclick="fmt('h3')" style="font-size:10px">H3</button>
+      <div class="tool-sep"></div>
+      <button class="tool" title="Bullet list"   onclick="fmt('ul')" style="font-size:18px">·</button>
+      <button class="tool" title="Numbered list" onclick="fmt('ol')" style="font-size:12px">1.</button>
+      <button class="tool" title="Pull quote"    onclick="fmt('quote')" style="font-size:18px">"</button>
+      <div class="tool-sep"></div>
+      <button class="tool" title="YouTube video" onclick="openYT()" style="font-size:14px">▶</button>
+      <button class="tool" title="Hyperlink" onclick="openLink(false)" style="font-size:13px">🔗</button>
+      <div class="tool-sep"></div>
+      <button class="tool" id="prev-btn" title="Toggle preview" onclick="togglePrev()">👁</button>
+    </div>
+
+    <div class="editor-wrap">
+      <div class="wc-bar">
+        <span id="wc-w">0 words</span>
+        <span id="wc-c">0 chars</span>
+        <span id="wc-r">~1 min read</span>
+      </div>
+      <div class="split">
+        <div class="write-col">
+          <div class="write-inner">
+            <!-- Section + subtab pickers -->
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:20px;flex-wrap:wrap">
+              <div class="section-pick">
+                <button class="spick" data-s="comedy"    onclick="pickSec(this)">Comedy</button>
+                <button class="spick" data-s="sew"       onclick="pickSec(this)">SEW</button>
+                <button class="spick" data-s="butwhy"    onclick="pickSec(this)">But Why</button>
+                <button class="spick" data-s="profile"   onclick="pickSec(this)">Profiles</button>
+                <button class="spick" data-s="attention" onclick="pickSec(this)">Attention</button>
+              </div>
+              <div id="subtab-pick" style="display:none;align-items:center;gap:4px;"></div>
+            </div>
+            <!-- Title input — looks like the real post title -->
+            <input id="inp-title" type="text" placeholder="Post title..."
+              oninput="syncMeta()"
+              style="display:block;width:100%;background:transparent;border:none;outline:none;
+                     font-family:'Bebas Neue',sans-serif;font-size:54px;letter-spacing:2px;
+                     color:#1a1a1a;line-height:1;margin-bottom:12px;padding:0;
+                     caret-color:#e03e2d;">
+            <!-- Subtitle input -->
+            <input id="inp-subtitle" type="text" placeholder="Subtitle or teaser..."
+              oninput="syncMeta()"
+              style="display:block;width:100%;background:transparent;border:none;outline:none;
+                     font-family:'DM Serif Display',serif;font-style:italic;font-size:20px;
+                     color:#6b6b6b;margin-bottom:10px;padding:0;caret-color:#e03e2d;">
+            <!-- Date + section tag row -->
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+              <span class="tag tag-none" id="ptag">· section</span>
+              <input id="inp-date" type="date" oninput="syncMeta()"
+                style="background:transparent;border:none;outline:none;
+                       font-family:'DM Mono',monospace;font-size:11px;color:#888;
+                       padding:0;caret-color:#e03e2d;">
+            </div>
+            <div class="pre-divider" id="pdiv"></div>
+            <div id="editor" contenteditable="true" spellcheck="true"></div>
+          </div>
+        </div>
+        <div class="preview-col" id="prev-col">
+          <div class="prev-inner">
+            <div class="prev-tag tag-none" id="pv-tag">· section</div>
+            <div class="prev-ttl" id="pv-ttl">Untitled</div>
+            <div class="prev-sub" id="pv-sub"></div>
+            <div class="prev-met" id="pv-met"></div>
+            <div class="prev-div" id="pv-div"></div>
+            <div class="prev-bod" id="pv-bod"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGES MODE -->
+  <div id="page-mode-body" style="display:none;flex:1;overflow:hidden">
+    <div style="display:flex;height:100%">
+      <div style="flex:1;overflow-y:auto;background:#f0ead6;color:#1a1a1a">
+        <div id="page-toolbar" style="position:sticky;top:0;z-index:50;background:#f5f0e8;border-bottom:2px solid #d4ccb4;padding:8px 20px;display:flex;align-items:center;gap:4px;flex-wrap:wrap">
+          <span style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#aaa;margin-right:8px">FORMAT</span>
+          <button class="ptool" title="Bold" onclick="pfmt('bold')"><b>B</b></button>
+          <button class="ptool" title="Italic" onclick="pfmt('italic')"><i>I</i></button>
+          <div style="width:1px;height:20px;background:#d4ccb4;margin:0 4px"></div>
+          <button class="ptool" title="Section heading" onclick="pfmt('h2')" style="font-size:10px">H2</button>
+          <button class="ptool" title="Subheading" onclick="pfmt('h3')" style="font-size:9px">H3</button>
+          <div style="width:1px;height:20px;background:#d4ccb4;margin:0 4px"></div>
+          <button class="ptool" title="Bullet list" onclick="pfmt('ul')" style="font-size:16px">·</button>
+          <button class="ptool" title="Numbered list" onclick="pfmt('ol')" style="font-size:11px">1.</button>
+          <button class="ptool" title="Pull quote" onclick="pfmt('quote')" style="font-size:16px">"</button>
+          <div style="width:1px;height:20px;background:#d4ccb4;margin:0 4px"></div>
+          <button class="ptool" title="YouTube embed" onclick="openYT(true)" style="font-size:12px">▶</button>
+          <button class="ptool" title="Hyperlink" onclick="openLink(true)" style="font-size:12px">🔗</button>
+          <span style="font-family:'DM Mono',monospace;font-size:9px;color:#bbb;margin-left:12px" id="page-active-field-label">— click a field to edit</span>
+        </div>
+        <div style="padding:36px 52px">
+          <div style="max-width:660px;margin:0 auto">
+            <div id="page-editor-title" style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#888;margin-bottom:28px"></div>
+            <div id="page-editor-area"></div>
+          </div>
+        </div>
+      </div>
+      <div style="width:300px;border-left:1px solid #222;background:#0e0e0e;padding:28px 24px;overflow-y:auto;flex-shrink:0;display:flex;flex-direction:column;gap:20px">
+        <div>
+          <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#444;margin-bottom:12px">Publish</div>
+          <button onclick="copyPageHTML()" id="copy-page-btn" style="width:100%;padding:10px;background:var(--yellow);color:#000;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;border:none;border-radius:2px;cursor:pointer">COPY HTML</button>
+          <a id="page-gh-link" href="#" target="_blank" style="display:block;margin-top:8px;width:100%;padding:9px;background:none;color:var(--yellow);font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;border:1px solid var(--yellow);border-radius:2px;text-align:center;text-decoration:none">Open GitHub →</a>
+          <div id="page-copied-msg" style="display:none;margin-top:10px;font-family:'DM Mono',monospace;font-size:10px;color:#16a34a;text-align:center">✓ Copied! Paste on GitHub.</div>
+        </div>
+        <div style="border-top:1px solid #222;padding-top:16px">
+          <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#444;margin-bottom:8px">GitHub path</div>
+          <code id="page-gh-path-label" style="font-family:'DM Mono',monospace;font-size:11px;color:var(--yellow)"></code>
+        </div>
+        <div style="border-top:1px solid #222;padding-top:16px">
+          <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#444;margin-bottom:10px">Steps</div>
+          <div style="font-family:'DM Mono',monospace;font-size:11px;color:#555;line-height:2">
+            1. Edit fields on left<br>
+            2. Click Copy HTML<br>
+            3. Click Open GitHub →<br>
+            4. Select all (⌘A)<br>
+            5. Paste → Commit
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- POSTS JSON EDITOR MODE -->
+<div id="json-mode-body" style="display:none !important;flex:1;overflow:hidden;flex-direction:column">
+  <div style="background:#0a0a0a;border-bottom:1px solid var(--border);padding:10px 24px;display:flex;align-items:center;gap:12px;flex-shrink:0">
+    <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#444">Add new post:</div>
+    <input id="jp-slug"    class="meta-input" placeholder="slug (filename without .html)" style="width:240px">
+    <input id="jp-title"   class="meta-input" placeholder="Title" style="width:200px">
+    <input id="jp-sub"     class="meta-input" placeholder="Subtitle" style="width:200px">
+    <input id="jp-date"    class="meta-input" type="date" style="width:130px;font-family:'DM Mono',monospace;font-size:11px">
+    <select id="jp-sec" class="meta-input" style="width:110px">
+      <option value="">Section…</option>
+      <option value="comedy">Comedy</option>
+      <option value="sew">SEW</option>
+      <option value="butwhy">But Why</option>
+      <option value="profile">Profiles</option>
+      <option value="attention">Attention</option>
+    </select>
+    <input id="jp-subtab"  class="meta-input" placeholder="Subtab" style="width:160px">
+    <button onclick="jsonAddPost()" style="padding:6px 16px;background:var(--yellow);color:#000;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;border:none;border-radius:2px;cursor:pointer;white-space:nowrap">+ ADD</button>
+  </div>
+  <div style="flex:1;overflow-y:auto;padding:24px 28px">
+    <table id="json-table" style="width:100%;border-collapse:collapse;font-family:'DM Mono',monospace;font-size:12px">
+      <thead>
+        <tr style="border-bottom:2px solid var(--border);color:#444;text-align:left">
+          <th style="padding:8px 12px;letter-spacing:1px;text-transform:uppercase;font-size:10px">Title</th>
+          <th style="padding:8px 12px;letter-spacing:1px;text-transform:uppercase;font-size:10px">Subtitle</th>
+          <th style="padding:8px 12px;letter-spacing:1px;text-transform:uppercase;font-size:10px">Date</th>
+          <th style="padding:8px 12px;letter-spacing:1px;text-transform:uppercase;font-size:10px">Section</th>
+          <th style="padding:8px 12px;letter-spacing:1px;text-transform:uppercase;font-size:10px">Subtab</th>
+          <th style="padding:8px 12px;letter-spacing:1px;text-transform:uppercase;font-size:10px">Slug</th>
+          <th style="padding:8px 8px"></th>
+        </tr>
+      </thead>
+      <tbody id="json-tbody"></tbody>
+    </table>
+    <div id="json-empty" style="display:none;padding:40px;text-align:center;color:#444;font-family:'DM Mono',monospace;font-size:12px">No posts yet. Add one above.</div>
+  </div>
+  <div style="background:#0a0a0a;border-top:2px solid var(--yellow);padding:14px 24px;display:flex;align-items:center;gap:12px;flex-shrink:0">
+    <div style="font-family:'DM Mono',monospace;font-size:11px;color:#444;flex:1" id="json-count"></div>
+    <button onclick="jsonCopy()" id="json-copy-btn" style="padding:8px 24px;background:var(--yellow);color:#000;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;border:none;border-radius:2px;cursor:pointer">COPY posts.json</button>
+    <a href="https://github.com/thekrisbot/krisbot/edit/main/posts.json" target="_blank" style="padding:8px 16px;background:none;color:var(--yellow);font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;border:1px solid var(--yellow);border-radius:2px;text-decoration:none">Open GitHub →</a>
+    <div id="json-copied-msg" style="display:none;font-family:'DM Mono',monospace;font-size:10px;color:#16a34a">✓ Copied! Paste into posts.json on GitHub.</div>
+  </div>
+</div>
+
+<!-- SITE HEALTH MODE -->
+<div id="health-mode-body" style="display:none;flex:1;overflow:hidden;flex-direction:column">
+  <div style="background:#0a0a0a;border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;gap:16px;flex-shrink:0">
+    <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#444">Checks every URL in posts.json + all static pages</div>
+    <button onclick="runHealthCheck()" id="health-run-btn" style="padding:6px 20px;background:var(--yellow);color:#000;font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:2px;border:none;border-radius:2px;cursor:pointer">▶ RUN CHECK</button>
+    <div id="health-progress" style="font-family:'DM Mono',monospace;font-size:11px;color:#444;display:none"></div>
+    <div style="margin-left:auto;display:flex;gap:16px">
+      <span id="health-live-count" style="font-family:'DM Mono',monospace;font-size:11px;color:var(--green);display:none"></span>
+      <span id="health-dead-count" style="font-family:'DM Mono',monospace;font-size:11px;color:var(--red);display:none"></span>
+    </div>
+  </div>
+  <div style="flex:1;overflow-y:auto;padding:0">
+    <div style="border-bottom:1px solid #1a1a1a">
+      <div style="padding:14px 24px 10px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#333">Static Pages</div>
+      <div id="health-static" style="padding:0 24px 16px;display:flex;flex-wrap:wrap;gap:8px">
+        <div style="font-family:'DM Mono',monospace;font-size:11px;color:#333;padding:8px 0">Hit RUN CHECK to scan URLs...</div>
+      </div>
+    </div>
+    <div>
+      <div style="padding:14px 24px 10px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#333">Posts</div>
+      <table id="health-table" style="width:100%;border-collapse:collapse;font-family:'DM Mono',monospace;font-size:12px;display:none">
+        <thead>
+          <tr style="border-bottom:1px solid #1a1a1a">
+            <th style="padding:8px 24px;text-align:left;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#333;font-weight:400">Status</th>
+            <th style="padding:8px 12px;text-align:left;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#333;font-weight:400">Title</th>
+            <th style="padding:8px 12px;text-align:left;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#333;font-weight:400">Section</th>
+            <th style="padding:8px 12px;text-align:left;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#333;font-weight:400">URL</th>
+            <th style="padding:8px 12px;text-align:left;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#333;font-weight:400">Date</th>
+            <th style="padding:8px 12px"></th>
+          </tr>
+        </thead>
+        <tbody id="health-tbody"></tbody>
+      </table>
+      <div id="health-posts-placeholder" style="padding:8px 24px 24px;font-family:'DM Mono',monospace;font-size:11px;color:#333">Hit RUN CHECK to scan posts...</div>
+    </div>
+  </div>
+  <!-- Footer: copy updated posts.json after removals -->
+  <div id="health-footer" style="display:none;background:#0a0a0a;border-top:2px solid var(--yellow);padding:12px 24px;display:none;align-items:center;gap:12px;flex-shrink:0">
+    <div style="font-family:'DM Mono',monospace;font-size:10px;color:#666;flex:1">Posts list updated — copy the new posts.json and paste it on GitHub</div>
+    <button onclick="healthCopyJSON()" id="health-copy-btn" style="padding:8px 24px;background:var(--yellow);color:#000;font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:2px;border:none;border-radius:2px;cursor:pointer">COPY posts.json</button>
+    <a href="https://github.com/thekrisbot/krisbot/edit/main/posts.json" target="_blank" style="padding:8px 14px;background:none;color:var(--yellow);font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;border:1px solid var(--yellow);border-radius:2px;text-decoration:none">Open GitHub →</a>
+    <div id="health-copied-msg" style="display:none;font-family:'DM Mono',monospace;font-size:10px;color:#16a34a">✓ Copied!</div>
+  </div>
+</div>
+
+<!-- YouTube Modal -->
+<div class="modal-bg" id="yt-modal">
+  <div class="modal" style="width:400px">
+    <h3>Insert YouTube Video</h3>
+    <input id="yt-url" type="text" placeholder="Paste YouTube URL...">
+    <div class="mbtn-row">
+      <button class="mbtn mbtn-g" onclick="closeYT()">Cancel</button>
+      <button class="mbtn mbtn-y" onclick="insertYT()">Insert</button>
+    </div>
+  </div>
+</div>
+
+<!-- Link Modal -->
+<div class="modal-bg" id="link-modal">
+  <div class="modal" style="width:420px">
+    <h3>Insert Hyperlink</h3>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:12px">Select text first, then click 🔗 to wrap it in a link.</div>
+    <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:5px">URL</div>
+    <input id="link-url" type="text" placeholder="https://example.com" style="margin-bottom:4px">
+    <div style="font-family:'DM Mono',monospace;font-size:10px;color:#444;margin-bottom:16px">Opens in a new tab automatically.</div>
+    <div class="mbtn-row">
+      <button class="mbtn mbtn-g" onclick="closeLink()">Cancel</button>
+      <button class="mbtn mbtn-y" onclick="insertLink()">Insert Link</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="subtab-modal">
+  <div class="modal" style="width:420px">
+    <h3 style="margin-bottom:16px">Edit Sub-tabs for <span id="st-sec-label"></span></h3>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:12px">One sub-tab per line.</div>
+    <textarea id="st-textarea" style="width:100%;height:120px;background:#0d0d0d;border:1px solid var(--border);color:var(--bright);font-family:'DM Mono',monospace;font-size:13px;padding:10px;border-radius:2px;outline:none;resize:vertical"></textarea>
+    <div class="mbtn-row" style="margin-top:12px">
+      <button class="mbtn mbtn-g" onclick="closeSubtabEditor()">Cancel</button>
+      <button class="mbtn mbtn-y" onclick="saveSubtabs()">Save & Copy JSON</button>
+    </div>
+    <div id="st-copied" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--green);margin-top:8px;display:none">✓ Copied! Paste into posts.json on GitHub.</div>
+  </div>
+</div>
+
+<!-- Publish Modal -->
+<div class="modal-bg" id="pub-modal">
+  <div class="modal" style="width:860px;max-width:95vw">
+    <h3 style="margin-bottom:6px">Publish to krisbot.lol</h3>
+    <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:16px">File: <span id="gh-path"></span></div>
+    <!-- STEP 1 -->
+    <div style="background:#111;border:1px solid var(--border);border-radius:2px;padding:14px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between">
+      <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#888">&#9312; Post HTML &#8594; <span style="color:var(--yellow)" id="gh-path2"></span></div>
+      <div style="display:flex;gap:8px">
+        <button class="act-btn" id="copy-btn" onclick="copyHTML()" style="margin-top:0">Copy HTML</button>
+        <a class="act-btn" id="gh-link" href="#" target="_blank" style="margin-top:0">Open GitHub &#8594;</a>
+      </div>
+    </div>
+    <!-- STEP 2 -->
+    <div style="background:#111;border:1px solid var(--border);border-radius:2px;padding:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#888">&#9313; posts.json &#8212; <span id="pub-post-count" style="color:#555"></span></div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <div id="pub-added-msg" style="display:none;font-family:'DM Mono',monospace;font-size:10px;color:var(--green)">&#10003; Added</div>
+          <button class="act-btn" id="json-full-copy-btn" onclick="copyFullJSON()" style="margin-top:0">Copy posts.json</button>
+          <a class="act-btn" href="https://github.com/thekrisbot/krisbot/edit/main/posts.json" target="_blank" style="margin-top:0">Open posts.json &#8594;</a>
+        </div>
+      </div>
+      <!-- Auto-filled add row -->
+      <div style="background:#0d0d0d;border:1px solid #2a2a2a;border-radius:2px;padding:10px;margin-bottom:10px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+        <span style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#444;white-space:nowrap;margin-right:4px">New post:</span>
+        <input id="pub-jp-slug"   class="meta-input" placeholder="slug" style="width:150px;font-size:11px;padding:5px 8px">
+        <input id="pub-jp-title"  class="meta-input" placeholder="Title" style="width:150px;font-size:11px;padding:5px 8px">
+        <input id="pub-jp-sub"    class="meta-input" placeholder="Subtitle" style="width:150px;font-size:11px;padding:5px 8px">
+        <input id="pub-jp-date"   class="meta-input" type="date" style="width:120px;font-size:11px;padding:5px 8px;font-family:'DM Mono',monospace">
+        <select id="pub-jp-sec"   class="meta-input" style="width:95px;font-size:11px;padding:5px 8px">
+          <option value="">Section</option>
+          <option value="comedy">Comedy</option>
+          <option value="sew">SEW</option>
+          <option value="butwhy">But Why</option>
+          <option value="profile">Profiles</option>
+          <option value="attention">Attention</option>
+        </select>
+        <input id="pub-jp-subtab" class="meta-input" placeholder="Subtab" style="width:110px;font-size:11px;padding:5px 8px">
+        <button onclick="pubAddPost()" style="padding:5px 14px;background:var(--yellow);color:#000;font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:1px;border:none;border-radius:2px;cursor:pointer;white-space:nowrap">+ ADD</button>
+      </div>
+      <!-- Posts table -->
+      <div style="max-height:200px;overflow-y:auto;border:1px solid #1a1a1a;border-radius:2px">
+        <table style="width:100%;border-collapse:collapse;font-family:'DM Mono',monospace;font-size:11px">
+          <thead style="position:sticky;top:0;background:#0a0a0a;z-index:1">
+            <tr style="border-bottom:1px solid #222">
+              <th style="padding:6px 10px;text-align:left;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#444;font-weight:400">Title</th>
+              <th style="padding:6px 10px;text-align:left;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#444;font-weight:400">Date</th>
+              <th style="padding:6px 10px;text-align:left;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#444;font-weight:400">Section</th>
+              <th style="padding:6px 10px;text-align:left;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#444;font-weight:400">Slug</th>
+              <th style="padding:6px 6px"></th>
+            </tr>
+          </thead>
+          <tbody id="pub-json-tbody"></tbody>
+        </table>
+      </div>
+      <div style="margin-top:10px;font-family:'DM Mono',monospace;font-size:10px;color:#444">On GitHub: select all (&#8984;A) &#8594; paste &#8594; commit</div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;margin-top:14px">
+      <button class="mbtn mbtn-g" onclick="closePub()">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SEC_COLOR = { comedy:'#e03e2d', sew:'#2563eb', butwhy:'#16a34a', profile:'#7c3aed', attention:'#1a1060' };
+const SEC_LABEL = { comedy:'A · Comedy', sew:'B · Sports (SEW)', butwhy:'C · But Why Though', profile:'D · Profiles', attention:'Attention Economy' };
+const SEC_BACK  = { comedy:'/comedy', sew:'/sew', butwhy:'/butwhy', profile:'/profile', attention:'/attention' };
+const GH_REPO   = 'thekrisbot/krisbot';
+
+let CUR_SEC = null;
+let _html   = '';
+
+let SUBTABS = {
+  comedy:    ['SNL Writing Packet', 'Other Bits'],
+  sew:       ['SEW Episodes', 'Satire'],
+  butwhy:    ['Essays'],
+  profile:   ['Latest', 'Archive'],
+  attention: ['Essays', 'Research']
+};
+let CUR_SUBTAB = null;
+
+const FALLBACK_POSTS = {"posts":[{"title":"HeavenOS 2.0","subtitle":"St.Peter vs. the state of Enterprise Software","date":"2026-03-19","section":"comedy","subtab":"SNL Writing Packet","slug":"heaven-os"},{"title":"Oil Crisis","subtitle":"Geopolitics 101","date":"2026-03-13","section":"comedy","subtab":"SNL Writing Packet","slug":"oil-crisis"},{"title":"24K Magic - The Bruno Mars Rabbit Hole","subtitle":"The man you don't know, the journey (also you don't know)","date":"2026-03-09","section":"comedy","subtab":"SNL Writing Packet","slug":"bruno-mars"},{"title":"Gay Bar","subtitle":"Marco is ready to come out...","date":"2026-03-08","section":"comedy","subtab":"SNL Writing Packet","slug":"gay-bar"}],"subtabs":{"comedy":["SNL Writing Packet","Other Bits"],"sew":["SEW Episodes","Satire"],"butwhy":["Essays"],"profile":[],"attention":[]}};
+
+fetch('/posts.json').then(r => r.json()).then(data => {
+  if (data.subtabs) SUBTABS = data.subtabs;
+}).catch(() => {});
+
+function pickSec(btn) {
+  document.querySelectorAll('.spick').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  CUR_SEC = btn.dataset.s;
+  CUR_SUBTAB = null;
+  renderSubtabPicker();
+  syncMeta();
+  checkReady();
+}
+
+function renderSubtabPicker() {
+  const bar = document.getElementById('subtab-pick');
+  const tabs = SUBTABS[CUR_SEC] || [];
+  if (!tabs.length) { bar.style.display = 'none'; return; }
+  bar.style.display = 'flex';
+  bar.innerHTML = tabs.map(st =>
+    `<button class="spick stpick${CUR_SUBTAB === st ? ' on' : ''}" onclick="pickSubtab(this)" data-st="${st}" style="font-size:10px;padding:4px 10px">${st}</button>`
+  ).join('') + `<button onclick="openSubtabEditor()" style="background:none;border:1px dashed #444;color:#444;font-family:'DM Mono',monospace;font-size:9px;padding:4px 8px;border-radius:2px;cursor:pointer;margin-left:4px">✎ edit</button>`;
+  if (!CUR_SUBTAB && tabs.length) { CUR_SUBTAB = tabs[0]; updateSubtabButtons(); }
+}
+
+function pickSubtab(btn) {
+  CUR_SUBTAB = btn.dataset.st;
+  updateSubtabButtons();
+  checkReady();
+}
+
+function updateSubtabButtons() {
+  document.querySelectorAll('.stpick').forEach(b => b.classList.toggle('on', b.dataset.st === CUR_SUBTAB));
+}
+
+function syncMeta() {
+  const title = document.getElementById('inp-title').value.trim();
+  const sub   = document.getElementById('inp-subtitle').value.trim();
+  const dv    = document.getElementById('inp-date').value;
+  const color = CUR_SEC ? SEC_COLOR[CUR_SEC] : '#f7d94c';
+  const pt = document.getElementById('pt');
+  pt.textContent = title || 'Untitled';
+  pt.classList.toggle('has', !!title);
+  document.getElementById('ps').textContent = sub;
+  const tagEl = document.getElementById('ptag');
+  tagEl.textContent = CUR_SEC ? SEC_LABEL[CUR_SEC] : '· section';
+  tagEl.className   = `tag tag-${CUR_SEC || 'none'}`;
+  document.getElementById('pdate').textContent = dv ? fmtDate(dv) : '';
+  document.getElementById('pdiv').style.background = color;
+  updatePreview();
+  checkReady();
+}
+
+function fmtDate(dv) {
+  return new Date(dv + 'T12:00:00').toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric' });
+}
+
+function updateWC() {
+  const t = document.getElementById('editor').innerText || '';
+  const w = t.trim() ? t.trim().split(/\s+/).length : 0;
+  document.getElementById('wc-w').textContent = w + ' words';
+  document.getElementById('wc-c').textContent = t.length + ' chars';
+  document.getElementById('wc-r').textContent = '~' + Math.max(1, Math.round(w/200)) + ' min read';
+  checkReady();
+}
+
+function checkReady() {
+  const title   = document.getElementById('inp-title').value.trim();
+  const content = (document.getElementById('editor').innerText || '').trim();
+  document.getElementById('pub-btn').disabled = !(title && CUR_SEC && content.length > 5);
+}
+
+function fmt(cmd) {
+  document.getElementById('editor').focus();
+  const current = document.queryCommandValue('formatBlock').toLowerCase();
+  const blockMap = { h2:'h2', h3:'h3', quote:'blockquote' };
+  if (blockMap[cmd]) {
+    document.execCommand('formatBlock', false, current === blockMap[cmd] ? 'p' : blockMap[cmd]);
+  } else if (cmd === 'ul') {
+    document.execCommand('insertUnorderedList');
+  } else if (cmd === 'ol') {
+    document.execCommand('insertOrderedList');
+  } else if (cmd === 'bold') {
+    document.execCommand('bold');
+  } else if (cmd === 'italic') {
+    document.execCommand('italic');
+  }
+  updateFormatState();
+}
+
+function openYT(forPage)  {
+  _ytForPage = !!forPage;
+  document.getElementById('yt-modal').classList.add('open');
+  setTimeout(()=>document.getElementById('yt-url').focus(), 50);
+}
+function closeYT() { document.getElementById('yt-modal').classList.remove('open'); document.getElementById('yt-url').value = ''; }
+
+function insertYT() {
+  const url = document.getElementById('yt-url').value.trim();
+  const m   = url.match(/(?:v=|youtu\.be\/|embed\/)([A-Za-z0-9_-]{11})/);
+  if (!m) { alert('Could not find a YouTube video ID. Paste the full URL.'); return; }
+  const id  = m[1];
+  const div = document.createElement('div');
+  div.className   = 'yt-block';
+  div.dataset.ytid = id;
+  div.contentEditable = 'false';
+  div.textContent = 'youtube.com/watch?v=' + id;
+  const target = _ytForPage ? _activePageField : document.getElementById('editor');
+  if (!target) { closeYT(); return; }
+  target.focus();
+  const sel = window.getSelection();
+  if (sel.rangeCount) { const r = sel.getRangeAt(0); r.insertNode(div); r.setStartAfter(div); sel.removeAllRanges(); sel.addRange(r); }
+  else target.appendChild(div);
+  closeYT();
+  if (!_ytForPage) { updateWC(); }
+}
+
+let _savedRange = null;
+let _linkForPage = false;
+let _ytForPage = false;
+
+function openLink(forPage) {
+  _linkForPage = !!forPage;
+  const sel = window.getSelection();
+  if (sel.rangeCount) _savedRange = sel.getRangeAt(0).cloneRange();
+  document.getElementById('link-url').value = '';
+  document.getElementById('link-modal').classList.add('open');
+  setTimeout(() => document.getElementById('link-url').focus(), 50);
+}
+
+function closeLink() {
+  document.getElementById('link-modal').classList.remove('open');
+  document.getElementById('link-url').value = '';
+  _savedRange = null;
+}
+
+function insertLink() {
+  const url = document.getElementById('link-url').value.trim();
+  if (!url) { closeLink(); return; }
+  const fullUrl = url.startsWith('http') ? url : 'https://' + url;
+  const target = _linkForPage ? _activePageField : document.getElementById('editor');
+  if (!target) { closeLink(); return; }
+  target.focus();
+  if (_savedRange) {
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(_savedRange);
+  }
+  const sel = window.getSelection();
+  if (sel.rangeCount && !sel.isCollapsed) {
+    document.execCommand('createLink', false, fullUrl);
+    target.querySelectorAll('a').forEach(a => {
+      if (a.href === fullUrl || a.getAttribute('href') === fullUrl) {
+        a.target = '_blank'; a.rel = 'noopener';
+      }
+    });
+  } else {
+    const a = document.createElement('a');
+    a.href = fullUrl; a.target = '_blank'; a.rel = 'noopener'; a.textContent = fullUrl;
+    if (sel.rangeCount) { const r = sel.getRangeAt(0); r.insertNode(a); r.setStartAfter(a); sel.removeAllRanges(); sel.addRange(r); }
+    else target.appendChild(a);
+  }
+  closeLink();
+  if (!_linkForPage) { updateWC(); updatePreview(); }
+}
+
+function togglePrev() {
+  const col = document.getElementById('prev-col');
+  const btn = document.getElementById('prev-btn');
+  col.classList.toggle('open');
+  btn.classList.toggle('active');
+  if (col.classList.contains('open')) updatePreview();
+}
+
+function updatePreview() {
+  if (!document.getElementById('prev-col').classList.contains('open')) return;
+  const title = document.getElementById('inp-title').value.trim() || 'Untitled';
+  const sub   = document.getElementById('inp-subtitle').value.trim();
+  const dv    = document.getElementById('inp-date').value;
+  const color = CUR_SEC ? SEC_COLOR[CUR_SEC] : '#999';
+  document.getElementById('pv-ttl').textContent = title;
+  document.getElementById('pv-sub').textContent = sub;
+  document.getElementById('pv-met').textContent = dv ? fmtDate(dv) : '';
+  document.getElementById('pv-div').style.background = color;
+  const tagEl = document.getElementById('pv-tag');
+  tagEl.textContent = CUR_SEC ? SEC_LABEL[CUR_SEC] : '· section';
+  tagEl.className   = `prev-tag tag-${CUR_SEC || 'none'}`;
+  const bod = document.getElementById('editor').innerHTML
+    .replace(/<div class="yt-block"[^>]*data-ytid="([^"]+)"[^>]*contenteditable="false"[^>]*>[^<]*<\/div>/g,
+      (_, id) => `<div style="position:relative;padding-bottom:56.25%;margin:1em 0"><iframe src="https://www.youtube.com/embed/${id}" style="position:absolute;inset:0;width:100%;height:100%;border:none" allowfullscreen></iframe></div>`);
+  document.getElementById('pv-bod').innerHTML = bod;
+}
+
+function slug(str) {
+  return str.toLowerCase().replace(/[^a-z0-9\s-]/g,'').trim().replace(/\s+/g,'-').slice(0,60);
+}
+
+function buildHTML() {
+  const title = document.getElementById('inp-title').value.trim();
+  const sub   = document.getElementById('inp-subtitle').value.trim();
+  const dv    = document.getElementById('inp-date').value;
+  const sec   = CUR_SEC;
+  const color = SEC_COLOR[sec];
+  const label = SEC_LABEL[sec];
+  const back  = SEC_BACK[sec];
+  const dateStr = dv ? fmtDate(dv) : '';
+
+  const bodyHTML = document.getElementById('editor').innerHTML
+    .replace(/<div class="yt-block"[^>]*data-ytid="([^"]+)"[^>]*contenteditable="false"[^>]*>[^<]*<\/div>/g,
+      (_, id) => `<div style="position:relative;padding-bottom:56.25%;margin:1.6em 0"><iframe src="https://www.youtube.com/embed/${id}" style="position:absolute;inset:0;width:100%;height:100%;border:none" allowfullscreen loading="lazy"></iframe></div>`);
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>${title} — Krisbot</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#f0ead6;--black:#0e0e0e;--white:#f5f0e8;--yellow:#f7d94c;--red:#e03e2d;--blue:#2563eb;--green:#16a34a;--purple:#7c3aed;--muted:#6b6b6b;--border:#d4ccb4}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--cream);color:var(--black);font-family:'Instrument Sans',sans-serif}
+a{text-decoration:none;color:inherit}
+.wrap{max-width:680px;margin:0 auto;padding:60px 40px}
+.back{display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:${color};margin-bottom:44px}
+.back:hover{text-decoration:underline}
+.ptag{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:4px 10px;border-radius:2px;background:${color};color:#fff;display:inline-block;margin-bottom:16px}
+h1{font-family:'Bebas Neue',sans-serif;font-size:66px;letter-spacing:2px;line-height:1;margin-bottom:12px}
+.sub{font-family:'DM Serif Display',serif;font-style:italic;font-size:22px;color:var(--muted);margin-bottom:10px;line-height:1.4}
+.meta{font-family:'DM Mono',monospace;font-size:11px;color:#999;margin-bottom:28px}
+.divider{width:40px;height:3px;background:${color};margin-bottom:44px}
+.body{font-family:'Instrument Sans',sans-serif;font-weight:300;font-size:18px;line-height:1.85;color:#2a2a2a}
+.body p{margin-bottom:1.2em}
+.body h2{font-family:'Bebas Neue',sans-serif;font-size:38px;letter-spacing:1px;color:var(--black);margin:1.8em 0 .6em;line-height:1}
+.body h3{font-family:'DM Mono',monospace;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin:1.4em 0 .5em}
+.body ul,.body ol{padding-left:1.5em;margin-bottom:1.2em}
+.body li{margin-bottom:.4em}
+.body strong{font-family:'DM Serif Display',serif;font-weight:700;color:#0e0e0e}
+.body em{font-style:italic;font-family:'Instrument Sans',sans-serif;font-weight:300;color:#555}
+.body strong em{font-weight:300 !important;font-family:'Instrument Sans',sans-serif;font-style:italic;color:#6b6b6b}
+.body blockquote{border-left:3px solid ${color};padding-left:20px;color:var(--muted);font-style:italic;margin:1.4em 0}
+.body a{color:#4a9eff;text-decoration:underline}
+</style>
+</head>
+<body>
+<script src="/nav.js"><\/script>
+<div class="wrap">
+  <a class="back" href="${back}">← Back</a>
+  <div class="ptag">${label}</div>
+  <h1>${title}</h1>
+  ${sub     ? `<div class="sub">${sub}</div>` : ''}
+  ${dateStr ? `<div class="meta">${dateStr}</div>` : ''}
+  <div class="divider"></div>
+  <div class="body">${bodyHTML}</div>
+</div>
+</body>
+</html>`;
+}
+
+const SEC_INDEX_PATH = { comedy:'comedy/index.html', sew:'sew/index.html', butwhy:'butwhy/index.html', profile:'profile/index.html', attention:'attention/index.html' };
+
+let _cardHTML = '';
+
+// ── PUBLISH MODAL ──────────────────────────────────────────────
+let _fullJSON = '';
+let _pubPosts = []; // working copy for the publish modal
+
+function pubRenderTable() {
+  const tbody = document.getElementById('pub-json-tbody');
+  if (!tbody) return;
+  document.getElementById('pub-post-count').textContent = _pubPosts.length + ' posts total';
+  const SEC_COLORS_P = { comedy:'#e03e2d', sew:'#2563eb', butwhy:'#16a34a', profile:'#7c3aed', attention:'#1a1060' };
+  tbody.innerHTML = _pubPosts.map((p, i) => {
+    const col = SEC_COLORS_P[p.section] || '#555';
+    const d = p.date ? new Date(p.date+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—';
+    return `<tr style="border-bottom:1px solid #1a1a1a;transition:background .1s" onmouseover="this.style.background='#111'" onmouseout="this.style.background='transparent'">
+      <td style="padding:8px 10px;color:var(--bright);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.title||'—'}</td>
+      <td style="padding:8px 10px;color:#555;white-space:nowrap">${d}</td>
+      <td style="padding:8px 10px"><span style="padding:2px 7px;border-radius:2px;background:${col};color:#fff;font-size:9px;letter-spacing:1px;text-transform:uppercase">${p.section||'—'}</span></td>
+      <td style="padding:8px 10px;color:#444;font-size:10px">${p.slug||'—'}</td>
+      <td style="padding:8px 6px;text-align:right"><button onclick="pubDeletePost(${i})" style="padding:2px 8px;background:none;border:1px solid #333;color:#555;font-family:'DM Mono',monospace;font-size:9px;border-radius:2px;cursor:pointer" onmouseover="this.style.borderColor='#e03e2d';this.style.color='#e03e2d'" onmouseout="this.style.borderColor='#333';this.style.color='#555'">✕</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function pubDeletePost(i) {
+  _pubPosts.splice(i, 1);
+  JP_POSTS = [..._pubPosts];
+  savePostsLocally();
+  pubRenderTable();
+  document.getElementById('json-full-copy-btn').textContent = 'Copy posts.json';
+  document.getElementById('json-full-copy-btn').classList.remove('done');
+}
+
+function pubAddPost() {
+  const sl      = document.getElementById('pub-jp-slug').value.trim();
+  const title   = document.getElementById('pub-jp-title').value.trim();
+  const sub     = document.getElementById('pub-jp-sub').value.trim();
+  const date    = document.getElementById('pub-jp-date').value;
+  const section = document.getElementById('pub-jp-sec').value;
+  const subtab  = document.getElementById('pub-jp-subtab').value.trim();
+  if (!sl || !title || !section) { alert('Slug, title and section are required.'); return; }
+  // Remove duplicate slug, prepend
+  _pubPosts = _pubPosts.filter(p => p.slug !== sl);
+  _pubPosts.unshift({ title, subtitle: sub, date, section, subtab, slug: sl });
+  JP_POSTS = [..._pubPosts];
+  savePostsLocally();
+  pubRenderTable();
+  const msg = document.getElementById('pub-added-msg');
+  msg.style.display = 'inline';
+  setTimeout(() => msg.style.display = 'none', 2000);
+  document.getElementById('json-full-copy-btn').textContent = 'Copy posts.json';
+  document.getElementById('json-full-copy-btn').classList.remove('done');
+}
+
+function openPub() {
+  const title    = document.getElementById('inp-title').value.trim();
+  const sub      = document.getElementById('inp-subtitle').value.trim();
+  const dv       = document.getElementById('inp-date').value;
+  const postSlug = slug(title);
+  const ghPath   = `${CUR_SEC}/${postSlug}.html`;
+  const ghURL    = `https://github.com/${GH_REPO}/new/main/${CUR_SEC}?filename=${postSlug}.html`;
+
+  _html = buildHTML();
+
+  // Copy current JP_POSTS as working list, prepend this post (deduped)
+  _pubPosts = JP_POSTS.filter(p => p.slug !== postSlug);
+  _pubPosts.unshift({ title, subtitle: sub, date: dv, section: CUR_SEC, subtab: CUR_SUBTAB || '', slug: postSlug });
+
+  // Auto-fill the add row with current post details
+  document.getElementById('pub-jp-slug').value   = postSlug;
+  document.getElementById('pub-jp-title').value  = title;
+  document.getElementById('pub-jp-sub').value    = sub;
+  document.getElementById('pub-jp-date').value   = dv;
+  document.getElementById('pub-jp-sec').value    = CUR_SEC;
+  document.getElementById('pub-jp-subtab').value = CUR_SUBTAB || '';
+
+  document.getElementById('gh-link').href = ghURL;
+  document.getElementById('gh-path').textContent  = ghPath;
+  document.getElementById('gh-path2').textContent = ghPath;
+
+  const cb = document.getElementById('copy-btn');
+  cb.textContent = 'Copy HTML'; cb.classList.remove('done');
+  document.getElementById('json-full-copy-btn').textContent = 'Copy posts.json';
+  document.getElementById('json-full-copy-btn').classList.remove('done');
+  document.getElementById('pub-added-msg').style.display = 'none';
+
+  pubRenderTable();
+  document.getElementById('pub-modal').classList.add('open');
+}
+
+function closePub() { document.getElementById('pub-modal').classList.remove('open'); }
+
+async function copyFullJSON() {
+  _fullJSON = JSON.stringify({ posts: _pubPosts, subtabs: JP_SUBTABS }, null, 2);
+  try { await navigator.clipboard.writeText(_fullJSON); }
+  catch(e) { const t=document.createElement('textarea');t.value=_fullJSON;document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t); }
+  const btn = document.getElementById('json-full-copy-btn');
+  btn.textContent = '✓ Copied!'; btn.classList.add('done');
+  // Sync back to main JP_POSTS and persist
+  JP_POSTS = [..._pubPosts];
+  savePostsLocally();
+}
+
+async function copyHTML() {
+  try { await navigator.clipboard.writeText(_html); }
+  catch(e) { const t=document.createElement('textarea');t.value=_html;document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t); }
+  const btn = document.getElementById('copy-btn');
+  btn.textContent = '✓ Copied!'; btn.classList.add('done');
+}
+
+document.addEventListener('keydown', e => {
+  const mod = e.metaKey || e.ctrlKey;
+  if (mod && e.key==='b') { e.preventDefault(); fmt('bold'); }
+  if (mod && e.key==='i') { e.preventDefault(); fmt('italic'); }
+  if (e.key==='Escape') { closeYT(); closePub(); closeLink(); }
+});
+document.getElementById('yt-modal').addEventListener('click', e => { if(e.target===e.currentTarget) closeYT(); });
+document.getElementById('pub-modal').addEventListener('click', e => { if(e.target===e.currentTarget) closePub(); });
+document.getElementById('link-url').addEventListener('keydown', e => { if (e.key === 'Enter') insertLink(); });
+
+document.getElementById('editor').addEventListener('input', () => { updateWC(); updatePreview(); updateFormatState(); });
+document.getElementById('editor').addEventListener('keyup', updateFormatState);
+document.getElementById('editor').addEventListener('mouseup', updateFormatState);
+
+function updateFormatState() {
+  const checks = {
+    'Bold (⌘B)':       () => document.queryCommandState('bold'),
+    'Italic (⌘I)':     () => document.queryCommandState('italic'),
+    'Section heading':  () => document.queryCommandValue('formatBlock') === 'h2',
+    'Subheading':       () => document.queryCommandValue('formatBlock') === 'h3',
+    'Bullet list':      () => document.queryCommandState('insertUnorderedList'),
+    'Numbered list':    () => document.queryCommandState('insertOrderedList'),
+    'Pull quote':       () => document.queryCommandValue('formatBlock') === 'blockquote',
+  };
+  document.querySelectorAll('.tool[title]').forEach(btn => {
+    const check = checks[btn.getAttribute('title')];
+    if (check) btn.classList.toggle('active', check());
+  });
+}
+
+document.getElementById('editor').addEventListener('paste', e => {
+  e.preventDefault();
+  const html = e.clipboardData.getData('text/html');
+  const text = e.clipboardData.getData('text/plain');
+
+  if (html) {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+
+    doc.querySelectorAll('span').forEach(el => {
+      const style = el.getAttribute('style') || '';
+      const isBold = /font-weight\s*:\s*(bold|700|800|900)/i.test(style);
+      const isItalic = /font-style\s*:\s*italic/i.test(style);
+      if (isBold && isItalic) {
+        const b = doc.createElement('strong'); const i = doc.createElement('em');
+        i.append(...el.childNodes); b.appendChild(i); el.replaceWith(b);
+      } else if (isBold) {
+        const b = doc.createElement('strong'); b.append(...el.childNodes); el.replaceWith(b);
+      } else if (isItalic) {
+        const i = doc.createElement('em'); i.append(...el.childNodes); el.replaceWith(i);
+      }
+    });
+
+    doc.querySelectorAll('b, strong').forEach(el => {
+      const style = el.getAttribute('style') || '';
+      if (/font-weight\s*:\s*normal/i.test(style)) { el.replaceWith(...el.childNodes); }
+    });
+
+    doc.querySelectorAll('*').forEach(el => {
+      if (el.tagName === 'SPAN') { el.replaceWith(...el.childNodes); return; }
+      el.removeAttribute('style'); el.removeAttribute('color'); el.removeAttribute('face');
+      el.removeAttribute('size'); el.removeAttribute('class'); el.removeAttribute('id');
+      el.removeAttribute('dir');
+      if (el.tagName === 'A') {
+        const href = el.getAttribute('href');
+        el.setAttribute('target', '_blank'); el.setAttribute('rel', 'noopener');
+        if (!href) el.replaceWith(...el.childNodes);
+      }
+    });
+
+    let cleaned = doc.body.innerHTML;
+    cleaned = cleaned.replace(/(<br\s*\/?>\s*){3,}/gi, '<br>');
+    cleaned = cleaned.replace(/(<p[^>]*>\s*(&nbsp;|\s)*<\/p>\s*){2,}/gi, '<p></p>');
+    document.execCommand('insertHTML', false, cleaned);
+  } else {
+    const paras = text.split(/\n{2,}/).map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('');
+    document.execCommand('insertHTML', false, paras || text);
+  }
+  updateWC(); updatePreview();
+});
+
+function openSubtabEditor() {
+  document.getElementById('st-sec-label').textContent = CUR_SEC;
+  document.getElementById('st-textarea').value = (SUBTABS[CUR_SEC] || []).join('\n');
+  document.getElementById('st-copied').style.display = 'none';
+  document.getElementById('subtab-modal').classList.add('open');
+}
+function closeSubtabEditor() { document.getElementById('subtab-modal').classList.remove('open'); }
+async function saveSubtabs() {
+  const lines = document.getElementById('st-textarea').value.split('\n').map(l => l.trim()).filter(Boolean);
+  SUBTABS[CUR_SEC] = lines; CUR_SUBTAB = lines[0] || null; renderSubtabPicker();
+  const json = JSON.stringify({ subtabs: SUBTABS }, null, 2);
+  try { await navigator.clipboard.writeText(json); }
+  catch(e) { const t=document.createElement('textarea');t.value=json;document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t); }
+  document.getElementById('st-copied').style.display = 'block';
+}
+
+let CUR_MODE = 'post';
+let CUR_PAGE = 'home';
+const MODE_BTNS   = { post:'mode-post-btn', page:'mode-page-btn', health:'mode-health-btn' };
+const MODE_BODIES = { post:'post-mode-body', page:'page-mode-body', health:'health-mode-body' };
+
+function setMode(mode) {
+  CUR_MODE = mode;
+  Object.entries(MODE_BODIES).forEach(([m, id]) => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = m === mode ? 'flex' : 'none';
+  });
+  document.getElementById('page-meta-row').style.display = mode === 'page' ? 'flex' : 'none';
+  document.getElementById('pub-btn').style.display = mode === 'post' ? '' : 'none';
+  Object.entries(MODE_BTNS).forEach(([m, id]) => {
+    const btn = document.getElementById(id); if (!btn) return;
+    const on = m === mode;
+    btn.style.background = on ? 'var(--yellow)' : 'none';
+    btn.style.color = on ? '#000' : 'var(--muted)';
+    btn.style.borderColor = on ? 'var(--yellow)' : 'var(--border)';
+  });
+  if (mode === 'page') loadPageEditor(CUR_PAGE);
+}
+
+let JP_POSTS = [];
+let JP_SUBTABS = {};
+// Load from localStorage if available, otherwise use baked-in fallback
+const FALLBACK_VERSION = '2026-03-19'; // bump this when you give me a new posts.json
+try {
+  const saved = localStorage.getItem('krisbot_posts');
+  const savedVersion = localStorage.getItem('krisbot_posts_version');
+  if (saved && savedVersion === FALLBACK_VERSION) {
+    const parsed = JSON.parse(saved);
+    JP_POSTS = parsed.posts || [];
+    JP_SUBTABS = parsed.subtabs || FALLBACK_POSTS.subtabs;
+  } else {
+    // New version baked in — reset to fallback
+    JP_POSTS = FALLBACK_POSTS.posts.map(p => ({...p}));
+    JP_SUBTABS = JSON.parse(JSON.stringify(FALLBACK_POSTS.subtabs));
+    localStorage.setItem('krisbot_posts', JSON.stringify({ posts: JP_POSTS, subtabs: JP_SUBTABS }));
+    localStorage.setItem('krisbot_posts_version', FALLBACK_VERSION);
+  }
+} catch(e) {
+  JP_POSTS = FALLBACK_POSTS.posts.map(p => ({...p}));
+  JP_SUBTABS = JSON.parse(JSON.stringify(FALLBACK_POSTS.subtabs));
+}
+
+function savePostsLocally() {
+  try {
+    localStorage.setItem('krisbot_posts', JSON.stringify({ posts: JP_POSTS, subtabs: JP_SUBTABS }));
+    localStorage.setItem('krisbot_posts_version', FALLBACK_VERSION);
+  } catch(e) {}
+}
+
+const SEC_COLORS_J = { comedy:'#e03e2d', sew:'#2563eb', butwhy:'#16a34a', profile:'#7c3aed', attention:'#1a1060' };
+
+function jsonRender() {
+  const tbody = document.getElementById('json-tbody');
+  const empty = document.getElementById('json-empty');
+  document.getElementById('json-count').textContent = JP_POSTS.length + ' post' + (JP_POSTS.length !== 1 ? 's' : '');
+  document.getElementById('json-copy-btn').textContent = 'COPY posts.json';
+  document.getElementById('json-copy-btn').style.background = 'var(--yellow)';
+  document.getElementById('json-copied-msg').style.display = 'none';
+  if (!JP_POSTS.length) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+  tbody.innerHTML = JP_POSTS.map((p, i) => {
+    const col = SEC_COLORS_J[p.section] || '#888';
+    const d = p.date ? new Date(p.date+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
+    return `<tr style="border-bottom:1px solid #1a1a1a;transition:background .1s" onmouseover="this.style.background='#111'" onmouseout="this.style.background='transparent'">
+      <td style="padding:10px 12px;color:var(--bright);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.title||'—'}</td>
+      <td style="padding:10px 12px;color:#555;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.subtitle||'—'}</td>
+      <td style="padding:10px 12px;color:#555;white-space:nowrap">${d}</td>
+      <td style="padding:10px 12px"><span style="padding:2px 8px;border-radius:2px;background:${col};color:#fff;font-size:10px;letter-spacing:1px;text-transform:uppercase">${p.section||'—'}</span></td>
+      <td style="padding:10px 12px;color:#555">${p.subtab||'—'}</td>
+      <td style="padding:10px 12px;color:#444;font-size:11px">${p.slug||'—'}</td>
+      <td style="padding:10px 8px;text-align:right"><button onclick="jsonDelete(${i})" style="padding:3px 10px;background:none;border:1px solid #333;color:#555;font-family:'DM Mono',monospace;font-size:10px;border-radius:2px;cursor:pointer" onmouseover="this.style.borderColor='#e03e2d';this.style.color='#e03e2d'" onmouseout="this.style.borderColor='#333';this.style.color='#555'">✕ remove</button></td>
+    </tr>`;
+  }).join('');
+  if (!document.getElementById('jp-date').value) {
+    document.getElementById('jp-date').value = new Date().toISOString().split('T')[0];
+  }
+}
+
+function jsonDelete(i) {
+  if (!confirm(`Remove "${JP_POSTS[i].title}"?`)) return;
+  JP_POSTS.splice(i, 1); jsonRender();
+}
+
+function jsonAddPost() {
+  const sl = document.getElementById('jp-slug').value.trim();
+  const title = document.getElementById('jp-title').value.trim();
+  const sub = document.getElementById('jp-sub').value.trim();
+  const date = document.getElementById('jp-date').value;
+  const section = document.getElementById('jp-sec').value;
+  const subtab = document.getElementById('jp-subtab').value.trim();
+  if (!sl || !title || !section) { alert('Slug, title and section are required.'); return; }
+  JP_POSTS.unshift({ title, subtitle: sub, date, section, subtab, slug: sl });
+  jsonRender();
+  ['jp-slug','jp-title','jp-sub','jp-subtab'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('jp-sec').value = '';
+}
+
+async function jsonCopy() {
+  const out = JSON.stringify({ posts: JP_POSTS, subtabs: JP_SUBTABS }, null, 2);
+  try { await navigator.clipboard.writeText(out); }
+  catch(e) { const t=document.createElement('textarea');t.value=out;document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t); }
+  document.getElementById('json-copy-btn').textContent = '✓ COPIED!';
+  document.getElementById('json-copy-btn').style.background = '#16a34a';
+  document.getElementById('json-copied-msg').style.display = 'block';
+}
+
+function pickPage(btn) {
+  document.querySelectorAll('#page-pick-row .spick').forEach(b => {
+    b.classList.remove('on'); b.style.background='none'; b.style.color='var(--muted)'; b.style.borderColor='var(--border)';
+  });
+  btn.classList.add('on'); btn.style.background='var(--yellow)'; btn.style.color='#000'; btn.style.borderColor='var(--yellow)';
+  CUR_PAGE = btn.dataset.p;
+  loadPageEditor(CUR_PAGE);
+}
+
+const PAGE_DEFS = {
+  home:      { ghPath:'index.html',          label:'Home Page (index.html)' },
+  comedy:    { ghPath:'comedy/index.html',   label:'Comedy Section Page' },
+  sew:       { ghPath:'sew/index.html',      label:'Sports (SEW) Section Page' },
+  butwhy:    { ghPath:'butwhy/index.html',   label:'But Why Though Section Page' },
+  profile:   { ghPath:'profile/index.html',  label:'Profiles Section Page' },
+  attention: { ghPath:'attention/index.html',label:'Attention Economy Page' },
+  contact:   { ghPath:'contact/index.html',  label:'Contact Page' },
+};
+
+const PAGE_STATE = {
+  home: { tagline:'Writer. Comedian. Sports nerd. Chronic over-thinker who turns confusion into content.', descA:'Daily sketch writing and whatever else falls out of my brain.', descB:'Weekly episodes and satirical sports writing.', descC:"Thought-provoking, occasionally unhinged essays.", descD:'Written-up pieces on people worth knowing about.' },
+  comedy:    { subtitle:'Sketches, packets, and bits — updated regularly' },
+  sew:       { subtitle:'Weekly episodes + satirical sports writing' },
+  butwhy:    { subtitle:"Essays on things that don't need essays but got them anyway" },
+  profile:   { sectionTitle:'The Profile', subtitle:'People I find interesting — written up' },
+  attention: { eyebrow:'Thesis · Long-form research', titleThe:'The', titleMain:'Attention', titleEco:'Economy', para1:"In 2024, I stepped away from work to pursue a Master's in Media and Communications at Goldsmiths, University of London, drawn, in part, by a question I'd been quietly sitting with since the pandemic: <em>what is the attention economy doing to us?</em>", para2:"As part of my Master's I submitted a thesis that examines how social media platforms engineer human behaviour through design choices that appear innocuous but are a deliberate effort to increase user engagement.", para3:'You can download a copy of the full thesis from below.', pdfFile:'How Social Media Platforms Engineer User Behaviour Through Design.pdf' },
+  contact:   { email:'hi@krisbot.lol', instagram:'@krisbot', youtube:'Krisbot', bio:'Writer, comedian, sports nerd. Based in India.' },
+};
+
+let _activePageField = null;
+
+function trackPageField(el, fieldId, page) {
+  el.addEventListener('focus', () => {
+    _activePageField = el;
+    document.getElementById('page-active-field-label').textContent = '— editing: ' + fieldId;
+  });
+  el.addEventListener('input', () => { PAGE_STATE[page][fieldId] = el.innerHTML; });
+  el.addEventListener('keydown', e => {
+    const mod = e.metaKey || e.ctrlKey;
+    if (mod && e.key==='b') { e.preventDefault(); pfmt('bold'); }
+    if (mod && e.key==='i') { e.preventDefault(); pfmt('italic'); }
+  });
+}
+
+function pfmt(cmd) {
+  if (!_activePageField) return;
+  _activePageField.focus();
+  const blockMap = { h2:'h2', h3:'h3', quote:'blockquote' };
+  if (blockMap[cmd]) {
+    const cur = document.queryCommandValue('formatBlock').toLowerCase();
+    document.execCommand('formatBlock', false, cur === blockMap[cmd] ? 'p' : blockMap[cmd]);
+  } else if (cmd === 'ul') { document.execCommand('insertUnorderedList');
+  } else if (cmd === 'ol') { document.execCommand('insertOrderedList');
+  } else if (cmd === 'bold') { document.execCommand('bold');
+  } else if (cmd === 'italic') { document.execCommand('italic'); }
+  updatePageToolbarState();
+}
+
+function updatePageToolbarState() {
+  if (!_activePageField) return;
+  const checks = { 'Bold':()=>document.queryCommandState('bold'), 'Italic':()=>document.queryCommandState('italic'), 'Section heading':()=>document.queryCommandValue('formatBlock')==='h2', 'Subheading':()=>document.queryCommandValue('formatBlock')==='h3', 'Bullet list':()=>document.queryCommandState('insertUnorderedList'), 'Numbered list':()=>document.queryCommandState('insertOrderedList'), 'Pull quote':()=>document.queryCommandValue('formatBlock')==='blockquote' };
+  document.querySelectorAll('.ptool[title]').forEach(btn => { const check = checks[btn.getAttribute('title')]; if (check) btn.classList.toggle('active', check()); });
+}
+
+function buildPageForm(page) {
+  const s = PAGE_STATE[page];
+  const richField = (fieldId, label, val, singleLine) => ({
+    html: `<div class="page-field-wrap"><span class="page-field-label">${label}</span><div class="page-rich-field${singleLine?' single-line':''}" contenteditable="true" spellcheck="true" data-field="${fieldId}" data-page="${page}">${val||''}</div></div>`
+  });
+  let fields = [];
+  if (page === 'attention') {
+    fields = [richField('eyebrow','Eyebrow label',s.eyebrow,true),richField('titleThe','Title — "THE" line',s.titleThe,true),richField('titleMain','Title — Main word',s.titleMain,true),richField('titleEco','Title — Second word',s.titleEco,true),richField('para1','Paragraph 1',s.para1),richField('para2','Paragraph 2',s.para2),richField('para3','Paragraph 3',s.para3),richField('pdfFile','PDF filename',s.pdfFile,true)];
+  } else if (page === 'home') {
+    fields = [richField('tagline','Tagline',s.tagline),richField('descA','Section A description',s.descA),richField('descB','Section B description',s.descB),richField('descC','Section C description',s.descC),richField('descD','Section D description',s.descD)];
+  } else if (page === 'contact') {
+    fields = [richField('email','Email',s.email,true),richField('instagram','Instagram',s.instagram,true),richField('youtube','YouTube',s.youtube,true),richField('bio','Bio',s.bio)];
+  } else if (page === 'profile') {
+    fields = [richField('sectionTitle','Section title',s.sectionTitle,true),richField('subtitle','Section subtitle',s.subtitle)];
+  } else {
+    fields = [richField('subtitle','Section subtitle / tagline',s.subtitle)];
+  }
+  const colors = {home:'#1a1a1a',comedy:'#e03e2d',sew:'#2563eb',butwhy:'#16a34a',profile:'#7c3aed',attention:'#1a1060',contact:'#1a1a1a'};
+  const labels = {home:'Home Page',comedy:'Comedy',sew:'Sports (SEW)',butwhy:'But Why Though',profile:'Profiles',attention:'Attention Economy',contact:'Contact'};
+  return `<div style="font-family:'DM Serif Display',serif;font-size:26px;color:${colors[page]||'#1a1a1a'};margin-bottom:28px">${labels[page]||page}</div>` + fields.map(f=>f.html).join('');
+}
+
+function loadPageEditor(page) {
+  const def = PAGE_DEFS[page]; if (!def) return;
+  _activePageField = null;
+  document.getElementById('page-active-field-label').textContent = '— click a field to edit';
+  document.getElementById('page-editor-title').textContent = `Editing: ${def.label}`;
+  document.getElementById('page-editor-area').innerHTML = buildPageForm(page);
+  document.getElementById('page-gh-link').href = `https://github.com/thekrisbot/krisbot/edit/main/${def.ghPath}`;
+  document.getElementById('page-gh-path-label').textContent = def.ghPath;
+  document.getElementById('copy-page-btn').textContent = 'COPY HTML';
+  document.getElementById('copy-page-btn').style.background = 'var(--yellow)';
+  document.getElementById('page-copied-msg').style.display = 'none';
+  document.querySelectorAll('#page-editor-area .page-rich-field').forEach(el => {
+    trackPageField(el, el.dataset.field, el.dataset.page);
+    el.addEventListener('keyup', updatePageToolbarState);
+    el.addEventListener('mouseup', updatePageToolbarState);
+  });
+}
+
+function buildPageHTML(page) {
+  if (page === 'attention') {
+    const eyebrow=getPageFieldText('eyebrow'),titleThe=getPageFieldText('titleThe'),titleMain=getPageFieldText('titleMain'),titleEco=getPageFieldText('titleEco'),para1=getPageFieldVal('para1'),para2=getPageFieldVal('para2'),para3=getPageFieldVal('para3'),pdfFile=getPageFieldText('pdfFile');
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Attention Economy — Krisbot</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>body{opacity:0;transition:opacity .2s ease}</style>
+<script>document.fonts.ready.then(()=>document.body.style.opacity=1);setTimeout(()=>document.body.style.opacity=1,900);<\/script>
+<style>
+:root{--cream:#f0ead6;--black:#0e0e0e;--yellow:#f7d94c;--muted:#6b6b6b;--border:#d4ccb4;--ink:#1a1060}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--cream);color:var(--black);font-family:'Instrument Sans',sans-serif;min-height:100vh}
+a{text-decoration:none;color:inherit}
+.hero{min-height:calc(100vh - 55px);display:flex;align-items:center;justify-content:center;padding:80px 40px}
+.hero-inner{max-width:680px;width:100%}
+.eyebrow{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--muted);margin-bottom:24px}
+.title{font-family:'DM Serif Display',serif;font-size:clamp(52px,7vw,88px);line-height:1.05;margin-bottom:32px;font-weight:400}
+.title-the{color:var(--muted);display:block;font-size:0.5em;font-family:'DM Mono',monospace;letter-spacing:4px;text-transform:uppercase;margin-bottom:10px}
+.title-main{color:var(--ink);display:block}
+.title-eco{color:var(--black);display:block}
+.divider{width:48px;height:4px;background:var(--ink);margin-bottom:32px}
+.intro{font-family:'Instrument Sans',sans-serif;font-weight:300;font-size:21px;line-height:1.75;color:#333;margin-bottom:48px;max-width:580px}
+.intro em,.intro i{font-style:italic;color:var(--ink);font-weight:300}
+.intro strong,.intro b{font-weight:600}
+.meta-row{display:flex;align-items:center;gap:16px;margin-bottom:48px;flex-wrap:wrap}
+.meta-tag{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:5px 12px;border-radius:2px;background:var(--ink);color:#fff}
+.meta-detail{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)}
+.dl-btn{display:inline-flex;align-items:center;gap:10px;padding:14px 28px;background:var(--black);color:var(--yellow);font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;border-radius:2px;transition:all .2s;border:2px solid var(--black)}
+.dl-btn:hover{background:var(--ink);border-color:var(--ink)}
+.dl-btn svg{width:18px;height:18px;flex-shrink:0}
+.dl-note{margin-top:14px;font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px}
+</style>
+</head>
+<body>
+<script src="/nav.js"><\/script>
+<div class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">${eyebrow}</div>
+    <div class="title"><span class="title-the">${titleThe}</span><span class="title-main">${titleMain}</span><span class="title-eco">${titleEco}</span></div>
+    <div class="divider"></div>
+    <div class="intro">${para1}</div>
+    <div class="intro">${para2}</div>
+    <div class="intro">${para3}</div>
+    <div class="meta-row"><span class="meta-tag">Thesis</span><span class="meta-detail">By Kris</span><span class="meta-detail">~10,000 words</span><span class="meta-detail">~45 min read</span></div>
+    <a class="dl-btn" href="/attention/${pdfFile}" target="_blank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="M8 11l4 4 4-4"/><path d="M2 17l.621 2.485A2 2 0 004.561 21h14.878a2 2 0 001.94-1.515L22 17"/></svg>View / Download PDF</a>
+    <div class="dl-note">PDF · Opens in browser or saves to your device</div>
+  </div>
+</div>
+</body>
+</html>`;
+  }
+  return null;
+}
+
+function getPageFieldVal(fieldId) {
+  const el = document.querySelector(`#page-editor-area .page-rich-field[data-field="${fieldId}"]`);
+  return el ? el.innerHTML : (PAGE_STATE[CUR_PAGE][fieldId] || '');
+}
+function getPageFieldText(fieldId) {
+  const el = document.querySelector(`#page-editor-area .page-rich-field[data-field="${fieldId}"]`);
+  return el ? el.innerText.trim() : (PAGE_STATE[CUR_PAGE][fieldId] || '');
+}
+
+async function copyPageHTML() {
+  const html = buildPageHTML(CUR_PAGE);
+  if (!html) { alert('This page type is not yet supported for copy.'); return; }
+  try { await navigator.clipboard.writeText(html); }
+  catch(e) { const t=document.createElement('textarea');t.value=html;document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t); }
+  document.getElementById('copy-page-btn').textContent = '✓ COPIED!';
+  document.getElementById('copy-page-btn').style.background = '#16a34a';
+  document.getElementById('page-copied-msg').style.display = 'block';
+}
+
+const STATIC_PAGES = [
+  {label:'Home',url:'/'},{label:'Comedy',url:'/comedy'},{label:'Sports (SEW)',url:'/sew'},
+  {label:'But Why Though',url:'/butwhy'},{label:'Profiles',url:'/profile'},
+  {label:'Attention Economy',url:'/attention'},{label:'Contact',url:'/contact'},
+  {label:'posts.json',url:'/posts.json'},{label:'nav.js',url:'/nav.js'},
+];
+const SEC_COLORS_H = { comedy:'#e03e2d', sew:'#2563eb', butwhy:'#16a34a', profile:'#7c3aed', attention:'#1a1060' };
+
+async function checkURL(url) {
+  try { const res=await fetch(url,{method:'HEAD',cache:'no-store'}); return res.ok?'live':'dead'; }
+  catch(e) { try { const res=await fetch(url,{cache:'no-store'}); return res.ok?'live':'dead'; } catch(e2){return 'dead';} }
+}
+
+async function runHealthCheck() {
+  const btn=document.getElementById('health-run-btn'),progress=document.getElementById('health-progress');
+  btn.disabled=true; btn.textContent='⏳ Checking...'; progress.style.display='block';
+  document.getElementById('health-live-count').style.display='none';
+  document.getElementById('health-dead-count').style.display='none';
+  document.getElementById('health-table').style.display='none';
+  document.getElementById('health-posts-placeholder').style.display='block';
+  document.getElementById('health-posts-placeholder').textContent='Scanning...';
+  let liveCount=0,deadCount=0,done=0;
+  const total=STATIC_PAGES.length+JP_POSTS.length;
+  const upd=()=>{done++;progress.textContent=`${done} / ${total} checked...`;};
+  const staticEl=document.getElementById('health-static'); staticEl.innerHTML='';
+  await Promise.all(STATIC_PAGES.map(async p=>{
+    const status=await checkURL(p.url); upd();
+    if(status==='live')liveCount++;else deadCount++;
+    const color=status==='live'?'#16a34a':'#e03e2d';
+    const chip=document.createElement('div');
+    chip.style.cssText=`display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border:1px solid ${color};border-radius:2px;font-family:'DM Mono',monospace;font-size:11px;color:${color};${status==='dead'?'background:rgba(224,62,45,0.08)':''}`;
+    chip.innerHTML=`${status==='live'?'✓':'✕'} ${p.label}`; staticEl.appendChild(chip);
+  }));
+  const results=await Promise.all(JP_POSTS.map(async p=>{
+    const url=`/${p.section}/${p.slug}.html`;
+    const status=await checkURL(url); upd();
+    if(status==='live')liveCount++;else deadCount++;
+    return{...p,url,status};
+  }));
+  results.sort((a,b)=>{if(a.status!==b.status)return a.status==='dead'?-1:1;return(b.date||'').localeCompare(a.date||'');});
+  const tbody=document.getElementById('health-tbody');
+  tbody.innerHTML=results.map(p=>{
+    const live=p.status==='live',col=SEC_COLORS_H[p.section]||'#555';
+    const d=p.date?new Date(p.date+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'—';
+    return `<tr id="hrow-${p.slug}" style="border-bottom:1px solid #151515;${live?'':'background:rgba(224,62,45,0.04)'}">
+      <td style="padding:10px 24px">${live?'<span style="color:#16a34a">✓ LIVE</span>':'<span style="color:#e03e2d">✕ DEAD</span>'}</td>
+      <td style="padding:10px 12px;color:${live?'var(--bright)':'#e03e2d'};max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.title}</td>
+      <td style="padding:10px 12px"><span style="padding:2px 8px;border-radius:2px;background:${col};color:#fff;font-size:10px;letter-spacing:1px;text-transform:uppercase">${p.section}</span></td>
+      <td style="padding:10px 12px;font-size:11px;color:#555">${p.url}</td>
+      <td style="padding:10px 12px;color:#444;white-space:nowrap">${d}</td>
+      <td style="padding:10px 12px;text-align:right">
+        <button onclick="healthRemovePost('${p.slug}')" style="padding:3px 10px;background:none;border:1px solid #333;color:#555;font-family:'DM Mono',monospace;font-size:10px;border-radius:2px;cursor:pointer" onmouseover="this.style.borderColor='#e03e2d';this.style.color='#e03e2d'" onmouseout="this.style.borderColor='#333';this.style.color='#555'">✕ remove</button>
+      </td>
+    </tr>`;
+  }).join('');
+  document.getElementById('health-table').style.display=results.length?'table':'none';
+  document.getElementById('health-posts-placeholder').style.display=results.length?'none':'block';
+  if(!results.length) document.getElementById('health-posts-placeholder').textContent='No posts in posts.json yet.';
+  document.getElementById('health-live-count').textContent=`✓ ${liveCount} live`;
+  document.getElementById('health-live-count').style.display='inline';
+  document.getElementById('health-dead-count').textContent=`✕ ${deadCount} dead`;
+  document.getElementById('health-dead-count').style.display=deadCount>0?'inline':'none';
+  btn.disabled=false; btn.textContent='▶ RUN CHECK'; progress.style.display='none';
+}
+
+function healthRemovePost(slug) {
+  JP_POSTS = JP_POSTS.filter(p => p.slug !== slug);
+  savePostsLocally();
+  // Remove row from table
+  const row = document.getElementById('hrow-' + slug);
+  if (row) row.remove();
+  // Update live/dead counts
+  const rows = document.querySelectorAll('#health-tbody tr');
+  const liveCount = [...rows].filter(r => r.innerHTML.includes('LIVE')).length;
+  const deadCount = [...rows].filter(r => r.innerHTML.includes('DEAD')).length;
+  document.getElementById('health-live-count').textContent = `✓ ${liveCount} live`;
+  document.getElementById('health-dead-count').textContent = `✕ ${deadCount} dead`;
+  document.getElementById('health-dead-count').style.display = deadCount > 0 ? 'inline' : 'none';
+  // Show footer
+  const footer = document.getElementById('health-footer');
+  footer.style.display = 'flex';
+  document.getElementById('health-copy-btn').textContent = 'COPY posts.json';
+  document.getElementById('health-copy-btn').style.background = 'var(--yellow)';
+  document.getElementById('health-copied-msg').style.display = 'none';
+}
+
+async function healthCopyJSON() {
+  const out = JSON.stringify({ posts: JP_POSTS, subtabs: JP_SUBTABS }, null, 2);
+  try { await navigator.clipboard.writeText(out); }
+  catch(e) { const t=document.createElement('textarea');t.value=out;document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t); }
+  document.getElementById('health-copy-btn').textContent = '✓ COPIED!';
+  document.getElementById('health-copy-btn').style.background = '#16a34a';
+  document.getElementById('health-copied-msg').style.display = 'block';
+}
+
+function tryUnlock() {
+  const val = document.getElementById('lock-input').value.trim();
+  if (val === 'Circle@123') {
+    document.getElementById('lock-screen').style.display = 'none';
+    document.getElementById('shell').style.display = 'flex';
+    document.getElementById('inp-date').value = new Date().toISOString().split('T')[0];
+    syncMeta();
+    document.getElementById('inp-title').focus();
+  } else {
+    document.getElementById('lock-error').textContent = 'Wrong password. Try again.';
+    document.getElementById('lock-input').value = '';
+    document.getElementById('lock-input').focus();
+  }
+}
+document.getElementById('lock-btn').addEventListener('click', tryUnlock);
+document.getElementById('lock-input').addEventListener('keydown', e => { if (e.key === 'Enter') tryUnlock(); });
+</script>
+</body>
+</html>
