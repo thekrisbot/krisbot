@@ -50,17 +50,9 @@
     }
   ],
   "subtabs": {
-    "comedy": [
-      "SNL Writing Packet",
-      "Other Bits"
-    ],
-    "sew": [
-      "SEW Episodes",
-      "Satire"
-    ],
-    "butwhy": [
-      "Essays"
-    ],
+    "comedy": ["SNL Writing Packet", "Other Bits"],
+    "sew": ["SEW Episodes", "Satire"],
+    "butwhy": ["Essays", "Vignette"],
     "profile": [],
     "attention": []
   }
