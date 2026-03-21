@@ -1,6 +1,14 @@
 {
   "posts": [
     {
+      "title": "Tinder match",
+      "subtitle": "Dan hearts Delilah.",
+      "date": "2026-03-21",
+      "section": "comedy",
+      "subtab": "SNL Writing Packet",
+      "slug": "tinder-match"
+    },
+    {
       "title": "Welcome to Heaven_Os 2.0",
       "subtitle": "St.Peter vs. the State of Enterprise Software",
       "date": "2026-03-19",
