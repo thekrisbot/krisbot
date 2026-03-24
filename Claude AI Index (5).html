@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Tech — Krisbot</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#f0ead6;--black:#0e0e0e;--white:#f5f0e8;--yellow:#f7d94c;--red:#e03e2d;--blue:#2563eb;--green:#16a34a;--muted:#6b6b6b;--border:#d4ccb4;--purple:#7c3aed}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--cream);color:var(--black);font-family:'Instrument Sans',sans-serif;min-height:100vh}
+a{text-decoration:none;color:inherit}
+
+/* NAV */
+.s-nav{background:var(--black);padding:10px 32px;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid var(--yellow);position:sticky;top:0;z-index:100}
+.s-logo{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:3px;color:var(--yellow)}
+.s-logo-white{color:var(--white)}
+.s-nav-tabs{display:flex;gap:4px}
+.s-nav-tab{padding:8px 18px;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:1px;text-transform:uppercase;border:1.5px solid transparent;border-radius:2px;color:var(--white);background:transparent;text-decoration:none;transition:all .15s}
+.s-nav-tab:hover{border-color:var(--yellow);color:var(--yellow)}
+.a-work{background:var(--yellow)!important;color:var(--black)!important;border-color:var(--yellow)!important}
+
+/* HERO */
+.hero{padding:70px 60px;border-bottom:2px solid var(--border)}
+.hero-eyebrow{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--yellow);background:var(--black);display:inline-block;padding:4px 10px;margin-bottom:20px}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:72px;letter-spacing:2px;line-height:1;margin-bottom:16px}
+.hero-sub{font-family:'DM Serif Display',serif;font-style:italic;font-size:20px;color:var(--muted);line-height:1.5;margin-bottom:28px}
+.hero-body{font-family:'Instrument Sans',sans-serif;font-weight:300;font-size:16px;line-height:1.8;color:#3a3a3a;max-width:680px}
+.hero-body p{margin-bottom:1em}
+
+/* SHARED SECTION STYLES */
+.section-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.section-title{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:2px;line-height:1;margin-bottom:40px;border-bottom:2px solid var(--border);padding-bottom:20px}
+
+/* PORTFOLIO */
+.portfolio-wrap{padding:60px;background:var(--white);border-bottom:2px solid var(--border)}
+.portfolio-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.p-card{border:2px solid var(--border);background:var(--cream);display:flex;flex-direction:column;transition:border-color .15s}
+.p-card:hover{border-color:var(--black)}
+.p-card-header{padding:20px 24px 16px;border-bottom:1px solid var(--border)}
+.p-card-company{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.p-card-category{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;line-height:1}
+.p-card-context{padding:16px 24px;font-family:'Instrument Sans',sans-serif;font-weight:300;font-size:13px;line-height:1.7;color:#555;flex:1}
+.p-card-links{padding:0 24px 20px;display:flex;flex-direction:column;gap:8px}
+.p-card-link{display:flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.5px;color:var(--blue);border:1px solid #d0d8f0;padding:8px 12px;border-radius:2px;transition:all .15s}
+.p-card-link:hover{background:var(--blue);color:var(--white);border-color:var(--blue)}
+.p-card-link svg{width:12px;height:12px;fill:currentColor;flex-shrink:0}
+.p-card-link span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* EXPERIENCE */
+.section-wrap{padding:60px;border-bottom:2px solid var(--border)}
+.exp-grid{display:flex;flex-direction:column}
+.exp-row{display:grid;grid-template-columns:180px 1fr;border-bottom:1px solid var(--border);padding:28px 0}
+.exp-row:last-child{border-bottom:none}
+.exp-date{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);padding-top:4px;line-height:1.6}
+.exp-role{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px;line-height:1;margin-bottom:4px}
+.exp-company{font-family:'DM Mono',monospace;font-size:12px;letter-spacing:1px;color:var(--muted);margin-bottom:12px;text-transform:uppercase}
+.exp-bullets{list-style:none;padding:0}
+.exp-bullets li{font-family:'Instrument Sans',sans-serif;font-weight:300;font-size:15px;line-height:1.7;color:#3a3a3a;padding-left:16px;position:relative;margin-bottom:4px}
+.exp-bullets li::before{content:'—';position:absolute;left:0;color:var(--border)}
+
+/* SKILLS — tags */
+.skills-wrap{background:var(--black);padding:60px;border-top:3px solid var(--yellow)}
+.skills-section-title{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:2px;color:var(--white);line-height:1;margin-bottom:36px;border-bottom:1px solid #1a1a1a;padding-bottom:20px}
+.skills-groups{display:grid;grid-template-columns:repeat(4,1fr);gap:32px}
+.skill-group-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#555;margin-bottom:12px}
+.skill-tags{display:flex;flex-wrap:wrap;gap:8px}
+.skill-tag{font-family:'Instrument Sans',sans-serif;font-weight:300;font-size:12px;color:#aaa;padding:5px 12px;border:1px solid #222;border-radius:20px}
+
+/* EDUCATION */
+.edu-wrap{padding:60px}
+.edu-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:32px}
+.edu-card{padding:28px;border:2px solid var(--border);background:var(--white)}
+.edu-year{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.edu-degree{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px;line-height:1.1;margin-bottom:6px}
+.edu-school{font-family:'DM Serif Display',serif;font-style:italic;font-size:15px;color:var(--muted)}
+.edu-note{font-family:'Instrument Sans',sans-serif;font-weight:300;font-size:13px;color:var(--muted);margin-top:8px}
+.cert-list{margin-top:32px;display:flex;flex-direction:column}
+.cert-row{display:flex;align-items:center;gap:16px;padding:14px 0;border-bottom:1px solid var(--border);font-family:'Instrument Sans',sans-serif;font-weight:300;font-size:14px;color:#3a3a3a}
+.cert-row:last-child{border-bottom:none}
+.cert-dot{width:6px;height:6px;background:var(--yellow);border-radius:50%;flex-shrink:0}
+
+/* CV FOOTER */
+.cv-footer{background:var(--yellow);padding:48px 60px;display:flex;align-items:center;justify-content:space-between}
+.cv-footer-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#8a7a00;margin-bottom:6px}
+.cv-footer-title{font-family:'Bebas Neue',sans-serif;font-size:40px;letter-spacing:2px;color:var(--black);line-height:1}
+.cv-dl-btn{display:inline-flex;align-items:center;gap:10px;padding:14px 32px;background:var(--black);color:var(--yellow);font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;text-decoration:none;transition:all .15s;white-space:nowrap}
+.cv-dl-btn:hover{background:#111}
+
+@media(max-width:900px){
+  .hero{padding:48px 28px}
+  .portfolio-grid{grid-template-columns:1fr}
+  .skills-groups{grid-template-columns:repeat(2,1fr)}
+  .edu-grid{grid-template-columns:1fr}
+  .section-wrap,.portfolio-wrap,.edu-wrap{padding:40px 28px}
+  .skills-wrap{padding:40px 28px}
+  .cv-footer{padding:36px 28px;flex-direction:column;gap:24px;text-align:center}
+  .exp-row{grid-template-columns:1fr}
+  .exp-date{margin-bottom:8px}
+}
+</style>
+</head>
+<body>
+
+<div class="s-nav">
+  <a class="s-logo" href="/"><span>KRIS</span><span class="s-logo-white">BOT</span></a>
+  <div class="s-nav-tabs">
+    <a class="s-nav-tab" href="/">Home</a>
+    <a class="s-nav-tab" href="/comedy">Comedy</a>
+    <a class="s-nav-tab" href="/sew">Sports (SEW)</a>
+    <a class="s-nav-tab" href="/butwhy">But Why Though</a>
+    <a class="s-nav-tab" href="/profile">Profiles</a>
+    <a class="s-nav-tab a-work" href="/work">Work</a>
+    <a class="s-nav-tab" href="/contact">Contact</a>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">B2B Tech</div>
+  <div class="hero-title">Kris Vasudevan</div>
+  <div class="hero-sub">Product Marketing Manager — B2B SaaS.</div>
+  <div class="hero-body">
+    <p>5+ years in B2B SaaS spanning early-stage startups and enterprise public companies. I've owned product positioning, go-to-market strategy, sales enablement, and content — end-to-end.</p>
+    <p>From building GTM foundations from scratch at a pre-revenue startup, to owning the analytics product webpage at a NASDAQ-listed company serving 65,000+ customers.</p>
+  </div>
+</div>
+
+<!-- PORTFOLIO -->
+<div class="portfolio-wrap">
+  <div class="section-eyebrow">Selected writing</div>
+  <div class="section-title">Portfolio</div>
+  <div class="portfolio-grid">
+
+    <div class="p-card">
+      <div class="p-card-header">
+        <div class="p-card-company">Freshworks · Enterprise SaaS · NASDAQ: FRSH</div>
+        <div class="p-card-category">Product Page & Positioning</div>
+      </div>
+      <div class="p-card-context">
+        Freshworks competes with Salesforce, HubSpot, and ServiceNow at six-figure deal values. I conceptualised and owned the Analytics product webpage end-to-end — positioning, messaging, information architecture, and all supporting assets including case studies, a user guide, and a datasheet. The challenge: making a highly technical product legible to business decision-makers.
+      </div>
+      <div class="p-card-links">
+        <a class="p-card-link" href="https://www.freshworks.com/analytics/" target="_blank">
+          <svg viewBox="0 0 24 24"><path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42L17.59 5H14V3zm-1 2H5a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-8h-2v8H5V7h8V5z"/></svg>
+          <span>Freshworks Analytics: Unlock Business Insights with No-Code</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="p-card">
+      <div class="p-card-header">
+        <div class="p-card-company">Klenty · SMB & Mid-Market · Sales Engagement</div>
+        <div class="p-card-category">Top-of-Funnel Content</div>
+      </div>
+      <div class="p-card-context">
+        Klenty competes with Outreach and Reply in the sales engagement space. These two pieces were written as top-of-funnel lead gen — targeting sales leaders, SDRs, and BDRs with educational content that organically surfaced Klenty. Both ranked highly on Google and consistently drove qualified traffic.
+      </div>
+      <div class="p-card-links">
+        <a class="p-card-link" href="https://www.klenty.com/blog/bant-sales-qualification/" target="_blank">
+          <svg viewBox="0 0 24 24"><path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42L17.59 5H14V3zm-1 2H5a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-8h-2v8H5V7h8V5z"/></svg>
+          <span>How to Implement BANT Qualification Successfully for Modern Day Sales</span>
+        </a>
+        <a class="p-card-link" href="https://www.klenty.com/blog/cold-email-advertising-formula/" target="_blank">
+          <svg viewBox="0 0 24 24"><path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42L17.59 5H14V3zm-1 2H5a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-8h-2v8H5V7h8V5z"/></svg>
+          <span>Write the Perfect Cold Email Using this Advertising Formula</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="p-card">
+      <div class="p-card-header">
+        <div class="p-card-company">Dataflo · Early-Stage Startup · GTM Analytics</div>
+        <div class="p-card-category">Lead Magnet Content</div>
+      </div>
+      <div class="p-card-context">
+        Dataflo competes with Supermetrics and Funnel.io. At the time, it was pre-revenue with no customers. This piece focused on clear problem definition and product positioning for marketing leaders — and was actively used as a lead magnet in outbound campaigns to add credibility to sales conversations.
+      </div>
+      <div class="p-card-links">
+        <a class="p-card-link" href="https://dataflo.io/blog/lead-scoring/" target="_blank">
+          <svg viewBox="0 0 24 24"><path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42L17.59 5H14V3zm-1 2H5a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-8h-2v8H5V7h8V5z"/></svg>
+          <span>Lead Scoring Made Simple: A Step-by-Step Framework for Success</span>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- EXPERIENCE -->
+<div class="section-wrap">
+  <div class="section-eyebrow">Where I've worked</div>
+  <div class="section-title">Experience</div>
+  <div class="exp-grid">
+
+    <div class="exp-row">
+      <div class="exp-date">Apr 2022 —<br>Aug 2024</div>
+      <div class="exp-content">
+        <div class="exp-role">Product Marketing Manager — Platforms & Analytics</div>
+        <div class="exp-company">Freshworks (NASDAQ: FRSH) · Chennai, India · Enterprise B2B SaaS</div>
+        <ul class="exp-bullets">
+          <li>Owned end-to-end product marketing for Analytics across the Freshworks Platform, supporting a GTM org of 2,000+ across sales, CS, and solutions engineering</li>
+          <li>Developed positioning, messaging frameworks, and value propositions for web, sales, and internal channels</li>
+          <li>Produced full sales enablement suite: launch briefs, demo scripts, battlecards, FAQs, release emails, and enablement decks for 65,000+ customers</li>
+          <li>Conceived and delivered an in-product Help Center for Analytics 2.0 — coordinated 40–50 stakeholders across 5 product teams; produced 50 training videos, solution articles, and FAQs, driving significant L1 support ticket reduction</li>
+          <li>Embedded in daily product standups with the Head of Product, contributing to roadmap prioritisation and GTM readiness decisions</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-row">
+      <div class="exp-date">Jul 2020 —<br>Apr 2022</div>
+      <div class="exp-content">
+        <div class="exp-role">Product Marketing Manager</div>
+        <div class="exp-company">Dataflo · Chennai, India · GTM Analytics Platform</div>
+        <ul class="exp-bullets">
+          <li>Built go-to-market foundations from scratch: ICP definition, market positioning, website copy, and content strategy — with no live product or existing customers</li>
+          <li>Executed category creation strategy around "GTM Operating System" — content ranked #1 on Google for the target keyword</li>
+          <li>Scaled organic traffic to 10,000 monthly visits within 6 months through SEO-driven, buyer-journey-mapped content</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-row">
+      <div class="exp-date">Apr 2018 —<br>Dec 2019</div>
+      <div class="exp-content">
+        <div class="exp-role">Product Marketing Manager</div>
+        <div class="exp-company">Klenty · Chennai, India · Sales Engagement Platform</div>
+        <ul class="exp-bullets">
+          <li>Owned product positioning, landing pages, and pricing communications competing with Outreach and SalesLoft</li>
+          <li>Defined ICP, researched competitor messaging, and rebuilt core product landing pages — contributing to a 30% increase in CTR</li>
+          <li>Triaged 50–60 daily support tickets to identify product gaps; worked with engineering to ship UX improvements contributing to a 34% reduction in support tickets</li>
+          <li>Wrote in-product cold email templates shipped to customers as part of the core product experience</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SKILLS -->
+<div class="skills-wrap">
+  <div class="section-eyebrow" style="color:#444">What I bring</div>
+  <div class="skills-section-title">Skills</div>
+  <div class="skills-groups">
+    <div>
+      <div class="skill-group-label">Positioning & Messaging</div>
+      <div class="skill-tags">
+        <span class="skill-tag">Product positioning</span>
+        <span class="skill-tag">Messaging frameworks</span>
+        <span class="skill-tag">Value propositions</span>
+        <span class="skill-tag">ICP definition</span>
+        <span class="skill-tag">Competitive intel</span>
+      </div>
+    </div>
+    <div>
+      <div class="skill-group-label">Content & SEO</div>
+      <div class="skill-tags">
+        <span class="skill-tag">SEO content strategy</span>
+        <span class="skill-tag">Long-form B2B writing</span>
+        <span class="skill-tag">Cold email copy</span>
+        <span class="skill-tag">Category creation</span>
+      </div>
+    </div>
+    <div>
+      <div class="skill-group-label">Sales Enablement</div>
+      <div class="skill-tags">
+        <span class="skill-tag">Battlecards</span>
+        <span class="skill-tag">Demo scripts</span>
+        <span class="skill-tag">Enablement decks</span>
+        <span class="skill-tag">Launch briefs</span>
+        <span class="skill-tag">Win/loss analysis</span>
+      </div>
+    </div>
+    <div>
+      <div class="skill-group-label">Product Management</div>
+      <div class="skill-tags">
+        <span class="skill-tag">In-product UX copy</span>
+        <span class="skill-tag">Product roadmap influence</span>
+        <span class="skill-tag">Feature roll-out</span>
+        <span class="skill-tag">GTM readiness</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EDUCATION & CERTS -->
+<div class="edu-wrap">
+  <div class="section-eyebrow">Academic</div>
+  <div class="section-title">Education</div>
+  <div class="edu-grid">
+    <div class="edu-card">
+      <div class="edu-year">2024 — 2025</div>
+      <div class="edu-degree">MA Media & Communications — Distinction</div>
+      <div class="edu-school">Goldsmiths, University of London</div>
+      <div class="edu-note">Thesis: How Social Media Platforms Engineer User Behaviour through Design</div>
+    </div>
+    <div class="edu-card">
+      <div class="edu-year">2015 — 2018</div>
+      <div class="edu-degree">BCom — Branding, Accounting & Marketing</div>
+      <div class="edu-school">SASTRA Deemed University, Tamil Nadu</div>
+    </div>
+  </div>
+
+  <div style="margin-top:48px">
+    <div class="section-eyebrow">Continuous learning</div>
+    <div class="section-title" style="font-size:32px;margin-bottom:0;padding-bottom:16px">Certifications</div>
+    <div class="cert-list">
+      <div class="cert-row"><div class="cert-dot"></div>Write of Passage — David Perell's writing school (90% scholarship)</div>
+      <div class="cert-row"><div class="cert-dot"></div>Brand Management — London Business School</div>
+      <div class="cert-row"><div class="cert-dot"></div>The Complete Copywriting Course — Udemy</div>
+      <div class="cert-row"><div class="cert-dot"></div>Storytelling in the Digital Age — Udemy</div>
+    </div>
+  </div>
+</div>
+
+<!-- CV FOOTER -->
+<div class="cv-footer">
+  <div class="cv-footer-text">
+    <div class="cv-footer-eyebrow">Want the full picture?</div>
+    <div class="cv-footer-title">Download my CV</div>
+  </div>
+  <a class="cv-dl-btn" href="/tech/Kris_Product_Marketing_CV.pdf" target="_blank">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 16l-5-5h3V4h4v7h3l-5 5zm-7 2h14v2H5v-2z"/></svg>
+    Get CV — PDF
+  </a>
+</div>
+
+</body>
+</html>
