@@ -1,6 +1,14 @@
 {
   "posts": [
     {
+      "title": "Green Siren",
+      "subtitle": "That's that me espresso",
+      "date": "2026-03-27",
+      "section": "butwhy",
+      "subtab": "Essays",
+      "slug": "green-siren"
+    },
+    {
       "title": "Soul-searching",
       "subtitle": "Dan and Delilah.",
       "date": "2026-03-21",
@@ -50,9 +58,18 @@
     }
   ],
   "subtabs": {
-    "comedy": ["SNL Writing Packet", "Other Bits"],
-    "sew": ["SEW Episodes", "Satire"],
-    "butwhy": ["Essays", "Vignette"],
+    "comedy": [
+      "SNL Writing Packet",
+      "Other Bits"
+    ],
+    "sew": [
+      "SEW Episodes",
+      "Satire"
+    ],
+    "butwhy": [
+      "Essays",
+      "Vignette"
+    ],
     "profile": [],
     "attention": []
   }
