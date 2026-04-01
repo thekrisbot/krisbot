@@ -1,6 +1,14 @@
 {
   "posts": [
     {
+      "title": "Backyard CSI",
+      "subtitle": "Who dunnit?",
+      "date": "2026-03-29",
+      "section": "comedy",
+      "subtab": "SNL Writing Packet",
+      "slug": "backyard-csi"
+    },
+    {
       "title": "What's in a name?",
       "subtitle": "That went well. Right?",
       "date": "2026-04-01",
