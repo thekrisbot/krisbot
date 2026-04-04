@@ -5,7 +5,7 @@
     { label: 'Comedy',            href: '/comedy'    },
     { label: 'Sports (SEW)',      href: '/sew'       },
     { label: 'But Why Though',    href: '/butwhy'    },
-    { label: 'Profiles',          href: '/profile'   },
+    { label: 'The Profile',       href: '/profile'   },
     { label: 'Attention Economy', href: '/attention' },
     { label: 'Contact',           href: '/contact'   },
   ];
