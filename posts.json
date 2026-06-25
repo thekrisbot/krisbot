@@ -1,6 +1,14 @@
 {
   "posts": [
     {
+      "title": "250",
+      "subtitle": "It's 1776. The Founding Fathers are fresh off making history, and they're toasting to what America looks like 250 years from now.",
+      "date": "2026-06-25",
+      "section": "comedy",
+      "subtab": "SNL Writing Packet",
+      "slug": "250"
+    },
+    {
       "title": "Dinner with the boyfriend",
       "subtitle": "A German chancellor is having dinner with his daughter's new boyfriend. What could go wrong?",
       "date": "2026-05-26",
