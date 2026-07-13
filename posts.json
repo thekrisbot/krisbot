@@ -1,6 +1,14 @@
 {
   "posts": [
     {
+      "title": "GROUNDED",
+      "subtitle": "Caught between a rock and a hard place.",
+      "date": "2026-07-13",
+      "section": "comedy",
+      "subtab": "SNL Writing Packet",
+      "slug": "grounded"
+    },
+    {
       "title": "250",
       "subtitle": "It's 1776. The Founding Fathers are fresh off making history, and they're toasting to what America looks like 250 years from now.",
       "date": "2026-06-25",
