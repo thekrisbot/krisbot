@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Work in progress: celya ab — Krisbot</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#f0ead6;--black:#0e0e0e;--white:#f5f0e8;--yellow:#f7d94c;--red:#e03e2d;--blue:#2563eb;--green:#16a34a;--purple:#7c3aed;--muted:#6b6b6b;--border:#d4ccb4}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--cream);color:var(--black);font-family:'Instrument Sans',sans-serif}
+a{text-decoration:none;color:inherit}
+.wrap{max-width:680px;margin:0 auto;padding:60px 40px}
+.back{display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#7c3aed;margin-bottom:44px}
+.back:hover{text-decoration:underline}
+.ptag{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:4px 10px;border-radius:2px;background:#7c3aed;color:#fff;display:inline-block;margin-bottom:16px}
+h1{font-family:'Bebas Neue',sans-serif;font-size:66px;letter-spacing:2px;line-height:1;margin-bottom:12px}
+.sub{font-family:'DM Serif Display',serif;font-style:italic;font-size:22px;color:var(--muted);margin-bottom:10px;line-height:1.4}
+.meta{font-family:'DM Mono',monospace;font-size:11px;color:#999;margin-bottom:28px}
+.divider{width:40px;height:3px;background:#7c3aed;margin-bottom:44px}
+.body{font-family:'Instrument Sans',sans-serif;font-weight:300;font-size:18px;line-height:1.85;color:#2a2a2a}
+.body p{margin-bottom:1.2em}
+.body h2{font-family:'Bebas Neue',sans-serif;font-size:38px;letter-spacing:1px;color:var(--black);margin:1.8em 0 .6em;line-height:1}
+.body h3{font-family:'DM Mono',monospace;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin:1.4em 0 .5em}
+.body ul,.body ol{padding-left:1.5em;margin-bottom:1.2em}
+.body li{margin-bottom:.4em}
+.body strong,.body b{font-family:'DM Serif Display',serif;font-weight:700;color:#0e0e0e}
+.body em{font-style:italic;font-family:'Instrument Sans',sans-serif;font-weight:300;color:#555}
+.body strong em{font-weight:300 !important;font-family:'Instrument Sans',sans-serif;font-style:italic;color:#6b6b6b}
+.body blockquote{border-left:3px solid #7c3aed;padding-left:20px;color:var(--muted);font-style:italic;margin:1.4em 0}
+.body a{color:#4a9eff;text-decoration:underline}
+</style>
+</head>
+<body>
+<script src="/nav.js"></script>
+<div class="wrap">
+  <a class="back" href="/profile">← Back</a>
+  <div class="ptag">D · Profiles</div>
+  <h1>Work in progress: celya ab</h1>
+  <div class="sub">thoughts on abcelya's recent WIP show.</div>
+  <div class="meta">July 28, 2026</div>
+  <div class="divider"></div>
+  <div class="body"><p>Have you ever looked at something as a teen and thought it was the coolest thing in the world only for you to grow up and realise that you were seeing the world through your cute little rose tinted coolers that your mum got at a travelling fair?</p><p>An invite to the cool kid's party. The first drink. Losing your "flower"?</p><p>It's 5PM at Park Theatre in Finsbury Park, close enough to the Emirates that you half expect a stray chant, if it weren't off-season.</p><p>There are maybe fifteen, twenty of us in the room. A stool with a glass of water sat on top of it. A mic stand beside it. The whole stage soaked in blue, with confetti scraps still on the floor from whatever happened here before us.</p><p>One of those low-key evenings that is as intimate as a Taylor Swift secret session rather than the stand-up show it is supposed to be.</p><p>Then cue the music, dandada-dan, the kind of fanfare that announces a king, and out comes <em>Celya AB</em>, or as my 'gram in my veins' brain keeps autocorrecting, <em>abcelya</em>.</p><p>Nobody who walks out to that music takes themselves or the world seriously. It is goofy, clever, and over-the-top, and that is the whole person, right there, before a single joke lands. Exactly how I like my comics.</p><p>She opens with a football joke, which gets my undivided attention so fast that somewhere my Concerta 30mg is bowing down its head in shame.</p><p>What follows is forty minutes of a genuinely sharp mind circling heavy-handed themes like validation and loneliness, delivered with the elegance of an Audrey Hepburn, or an Anne Hathaway for you younger generation, <em>said he</em>, sounding ninety:</p><p>A reference to the poor therapist, who is probably along for the highs and lows of this artistic life. A jab at the media's obsession with body positivity, and the subsequent discarding of it like Woody in Toy Story, when Ozempic showed up.</p><p>Every punchline unequivocally reminds you that here is somebody smart enough to have done something else with their life with actual real-world implications. Like a lawyer or a Wall Street analyst. Yet, here she is instead, spending it in a dimly-lit blue room on a sweaty afternoon, vowing to make drunks like me laugh.</p><p>But when a man in the front row needs a trip to the whizz palace, she turns usher, "straight on then a left", and a Dr. Pee-body when he's back, wanting the full report, was it alright, what colour was it, as he makes his way back to his seat. That is comedic instinct you cannot teach. At that moment you realise why she does what she does, and we are all better for it.</p><p>The show ends after forty five minutes, and <em>abcelya</em> rushes backstage before any of us could say hi. I'd be more upset, if I did not already know she needed every second between now and her next show, all the way out in Croydon. That meant trains, tubes, buses, and, speaking as a former resident, more than a little cursing at the transport links out there.</p><p>For me? It is a much more relaxed trip back home on the W3, fast enough that I would be on the hook for just £1.75 for the two-way journey.</p><p><em>Celya</em> probably won't remember this show in a month's time. And in all honesty, I may not too.</p><p>That said, I make my way back home, getting into a boxing match with my lock and key, and finally manage to put on a kettle for some soothing tea.</p><p>I look at the microwave, dishwasher, and the washing machine all lined-up neatly.</p><p>Just as lifeless as the Hinge conversation last night.</p><p>The microwave isn't putting on theatre. It is just there. Dirty and indifferent.</p><p>The dishwasher just looks as difficult as you have always remembered it.</p><p>The washing machine is perhaps an exception, eager to suck your life dry.</p><p>Yet, in <em>abcelya's</em> world, they all come to life with rich quirks.</p><p>Even if you brush it off, and finally get on your bed and google 'Arsenal baby parade', you realise that <em>celya's</em> rendition is somehow streets ahead of the original.</p><p>And that is when you realise, for the past hour, you saw the world in those same rose-tinted glasses, this time caught in the webs of an artist at the peak of her craft.</p><p>Except, the hype is real.</p><p></p><p></p></div>
+</div>
+</body>
+</html>
