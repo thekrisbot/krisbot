@@ -1,6 +1,14 @@
 {
   "posts": [
     {
+      "title": "Scratch That",
+      "subtitle": "A sketch on sketches. Ooooh we get it, it's meta.",
+      "date": "2026-08-11",
+      "section": "comedy",
+      "subtab": "SNL Writing Packet",
+      "slug": "scratch-that"
+    },
+    {
       "title": "Work in progress: celya ab",
       "subtitle": "thoughts on abcelya's recent WIP show.",
       "date": "2026-07-28",
